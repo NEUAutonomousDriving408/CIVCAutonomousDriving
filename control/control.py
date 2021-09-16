@@ -7,17 +7,27 @@ import control.pid as pid
 # control param
 speed_kp = 1.20
 speed_ki = 0.02
+radarPid = pid.PID(speed_kp, speed_ki, 0)
+radarPidThread_1 = 6000
+radarPidThread_2 = 3000
+
 speedPid = pid.PID(speed_kp, speed_ki, 0)
-speedPidThread_1 = 6000
-speedPidThread_2 = 3000
 
 def init():
     speedPid.clear()
-    speedPid.setSetpoint(500)# 保持跟车15m
+    radarPid.clear()
 
-# 启动算法  在此方法中调用实现算法控制代码
+    radarPid.setSetpoint(500)             # 跟车5m
+    speedPid.setSetpoint(40)                # 保持40km/h
 
-def lontitudeControl(value, lonPid):
+# 速度控制 达到设定速度
+def lontitudeControlSpeed(speed, lonPid):
+    lonPid.update(speed)
+    lonPid.thorro_ =0.85
+    lonPid.brake_ = 0
+
+# radar 障碍控制 与速度有关
+def lontitudeControlRadar(value, lonPid):
     if(value): # for none type error
         lonPid.update(value)
         valuelast = value
@@ -25,15 +35,15 @@ def lontitudeControl(value, lonPid):
         lonPid.update(lonPid.Setpoint)# 一般不会出现
 
     # pid to control TODO:thread to test
-    if(lonPid.output >speedPidThread_1):# far away from front car
+    if(lonPid.output >radarPidThread_1):# far away from front car
         lonPid.thorro_ =0.85
         lonPid.brake_ = 0
-    elif(lonPid.output >speedPidThread_2):# brake softly
-        lonPid.thorro_ = (lonPid.output / speedPidThread_1) * 0.65 #
-        lonPid.brake_= ((speedPidThread_1 - lonPid.output) / speedPidThread_1) * 0.1 #
+    elif(lonPid.output >radarPidThread_2):# brake softly
+        lonPid.thorro_ = (lonPid.output / radarPidThread_1) * 0.65 #
+        lonPid.brake_= ((radarPidThread_1 - lonPid.output) / radarPidThread_1) * 0.1 #
     else:
-        lonPid.thorro_ = (lonPid.output / speedPidThread_2) * 0.3 #
-        lonPid.brake_= ((speedPidThread_2 - lonPid.output) / speedPidThread_2) * 0.4 #
+        lonPid.thorro_ = (lonPid.output / radarPidThread_2) * 0.3 #
+        lonPid.brake_= ((radarPidThread_2 - lonPid.output) / radarPidThread_2) * 0.4 #
 
 
 def run():
@@ -49,7 +59,6 @@ def run():
 
     # get sensor
     sensors = ADCPlatform.get_sensors()
-    print(sensors)
     for sensor in sensors:
         if sensor.Name == "毫米波雷达":
             radarId = sensor.ID
@@ -66,34 +75,20 @@ def run():
             print("任务结束")
             running = False
             break
-        fs = control_data_package.json['FS']
-        # print("当前车车速：" + str(fs))
-        # 获取图片数据包 10102为摄像机类型传感器id
-        # image_package = ADCPlatform.get_image(cameraId)
+        carSpeed = control_data_package.json['FS']
+        # carX = control_data_package.json['X']
+        # carY = control_data_package.json['Y']
+
         # 获取数据包 10101为雷达GPS等数据类型传感器id
         landLine_package = ADCPlatform.get_data(landLineId)
-        # if landLine_package and len(landLine_package.json) > 0:
-            # print(landLine_package.json)
         data_package = ADCPlatform.get_data(radarId)# get rradar data to follow
 
-        # 纵向控制
-        # speed pid update
-        radarValue = data_package.json[0]["Range"]
-        lontitudeControl(radarValue, speedPid)
+        # 纵向障碍控制 speed pid update
+        radarValue = data_package.json[0]["Range"] * -1
+        # lontitudeControlRadar(radarValue, radarPid)
+        lontitudeControlSpeed(carSpeed, speedPid)
 
-        # if data_package and len(data_package.json) > 0:
-        #     print(data_package.json)
-        #     ttc = 0
-        #     if fs != 0:
-        #         ttc = data_package.json[0]["Range"]/100/fs
-        #     print(ttc)
-        #     if data_package.json[0]["Range"] < 3500 and ttc < 3:
-        #         ADCPlatform.control(0, 0, 1,0)
-        #         print("break")
-        #     # else:
-        #         # ADCPlatform.control(0.7, 0, 0)
-
-        # 控制方式           油门 方向 刹车
+        # 这里可以加入radar speed权重
         ADCPlatform.control(speedPid.thorro_, 0, speedPid.brake_,1)
 
         # ADCPlatform.control(0.7, 0, 0,-1)
