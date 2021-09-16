@@ -2,18 +2,40 @@ import ADCPlatform
 import time
 import control.pid as pid
 
+# TODO:add 速度获取 结合设定速度控制车速
+
 # control param
-speed_kp = 1.00
-speed_ki = 0.01
+speed_kp = 1.20
+speed_ki = 0.02
 speedPid = pid.PID(speed_kp, speed_ki, 0)
-speedPidThread_1 = 4000
+speedPidThread_1 = 6000
 speedPidThread_2 = 3000
 
 def init():
     speedPid.clear()
-    speedPid.setSetpoint(1500)# 保持跟车15m
+    speedPid.setSetpoint(500)# 保持跟车15m
 
 # 启动算法  在此方法中调用实现算法控制代码
+
+def lontitudeControl(value, lonPid):
+    if(value): # for none type error
+        lonPid.update(value)
+        valuelast = value
+    else:
+        lonPid.update(lonPid.Setpoint)# 一般不会出现
+
+    # pid to control TODO:thread to test
+    if(lonPid.output >speedPidThread_1):# far away from front car
+        lonPid.thorro_ =0.85
+        lonPid.brake_ = 0
+    elif(lonPid.output >speedPidThread_2):# brake softly
+        lonPid.thorro_ = (lonPid.output / speedPidThread_1) * 0.65 #
+        lonPid.brake_= ((speedPidThread_1 - lonPid.output) / speedPidThread_1) * 0.1 #
+    else:
+        lonPid.thorro_ = (lonPid.output / speedPidThread_2) * 0.3 #
+        lonPid.brake_= ((speedPidThread_2 - lonPid.output) / speedPidThread_2) * 0.4 #
+
+
 def run():
     # init control
     init()
@@ -27,6 +49,7 @@ def run():
 
     # get sensor
     sensors = ADCPlatform.get_sensors()
+    print(sensors)
     for sensor in sensors:
         if sensor.Name == "毫米波雷达":
             radarId = sensor.ID
@@ -52,24 +75,11 @@ def run():
         # if landLine_package and len(landLine_package.json) > 0:
             # print(landLine_package.json)
         data_package = ADCPlatform.get_data(radarId)# get rradar data to follow
-        # speed pid update
-        value = data_package.json[0]["Range"]
-        if(value): # for none type error
-            speedPid.update(value)
-            valuelast = value
-        else:
-            speedPid.update(valuelast)
 
-        # pid to control TODO:thread to test
-        if(speedPid.output >speedPidThread_1):
-            speedPid.thorro_ = 1
-            speedPid.brake_ = 0
-        elif(speedPid.output >speedPidThread_2):
-            speedPid.thorro_ = (speedPid.output / speedPidThread_1) * 0.85 #
-            speedPid.brake_= ((speedPidThread_1 - speedPid.output) / speedPidThread_1) * 0.1 #
-        else:
-            speedPid.thorro_ = (speedPid.output / speedPidThread_2) * 0.7 #
-            speedPid.brake_= ((speedPidThread_2 - speedPid.output) / speedPidThread_2) * 0.1 #
+        # 纵向控制
+        # speed pid update
+        radarValue = data_package.json[0]["Range"]
+        lontitudeControl(radarValue, speedPid)
 
         # if data_package and len(data_package.json) > 0:
         #     print(data_package.json)
@@ -85,8 +95,6 @@ def run():
 
         # 控制方式           油门 方向 刹车
         ADCPlatform.control(speedPid.thorro_, 0, speedPid.brake_,1)
-
-        print('thorrot:',speedPid.thorro_,'brake:',speedPid.brake_)
 
         # ADCPlatform.control(0.7, 0, 0,-1)
         # print("brake")
