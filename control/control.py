@@ -2,9 +2,12 @@ import ADCPlatform
 import time
 import control.pid as pid
 
+# control param
 speed_kp = 1.00
 speed_ki = 0.01
 speedPid = pid.PID(speed_kp, speed_ki, 0)
+speedPidThread_1 = 4000
+speedPidThread_2 = 3000
 
 def init():
     speedPid.clear()
@@ -49,13 +52,24 @@ def run():
         # if landLine_package and len(landLine_package.json) > 0:
             # print(landLine_package.json)
         data_package = ADCPlatform.get_data(radarId)# get rradar data to follow
+        # speed pid update
         value = data_package.json[0]["Range"]
-        if(value):
+        if(value): # for none type error
             speedPid.update(value)
             valuelast = value
         else:
             speedPid.update(valuelast)
 
+        # pid to control TODO:thread to test
+        if(speedPid.output >speedPidThread_1):
+            speedPid.thorro_ = 1
+            speedPid.brake_ = 0
+        elif(speedPid.output >speedPidThread_2):
+            speedPid.thorro_ = (speedPid.output / speedPidThread_1) * 0.85 #
+            speedPid.brake_= ((speedPidThread_1 - speedPid.output) / speedPidThread_1) * 0.1 #
+        else:
+            speedPid.thorro_ = (speedPid.output / speedPidThread_2) * 0.7 #
+            speedPid.brake_= ((speedPidThread_2 - speedPid.output) / speedPidThread_2) * 0.1 #
 
         # if data_package and len(data_package.json) > 0:
         #     print(data_package.json)

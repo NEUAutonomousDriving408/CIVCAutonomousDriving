@@ -68,17 +68,6 @@ class PID:
 
             self.output = self.PTerm * -1 + (self.Ki * self.ITerm * -1) + (self.Kd * self.DTerm)
 
-            # 这部分需要摘出来 在这里面不太合适
-            if(self.output >4000):
-                self.thorro_ = 1
-                self.brake_ = 0
-            elif(self.output >3000):
-                self.thorro_ = (self.output / 4000) * 0.85 #
-                self.brake_= ((4000 - self.output) / 4000) * 0.1 #
-            else:
-                self.thorro_ = (self.output / 3000) * 0.7 #
-                self.brake_= ((3000 - self.output) / 3000) * 0.1 #
-
     def setKp(self, proportional_gain):
         """Determines how aggressively the PID reacts to the current error with setting Proportional Gain"""
         self.Kp = proportional_gain
