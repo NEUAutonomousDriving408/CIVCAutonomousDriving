@@ -24,9 +24,11 @@ def run(perceptionFlag, data, PerceptionArgs):
     if not perceptionFlag:
         return None
 
-    img = convert_image_to_numpy_ndarray(data["image"].byte)
-    # print(img.shape)
-    detection.driving_runtime(PerceptionArgs["predictor"], None, img, PerceptionArgs["args"])
+    time.sleep(1)
+    while True:
+        img = convert_image_to_numpy_ndarray(data["image"].byte)
+        # print(img.shape)
+        detection.driving_runtime(PerceptionArgs["predictor"], None, img, PerceptionArgs["args"])
 
     return None
 

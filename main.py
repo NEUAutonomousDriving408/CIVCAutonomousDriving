@@ -3,7 +3,14 @@ import control
 import initial.initial as initial
 import sensor.loadsensor as sensor
 import perception.perception as perception
+import threading
 
+data = dict()
+data["control"] = None
+data["landLine"] = None
+data["radar"] = None
+data["image"] = None
+result = None
 
 if __name__ == '__main__':
     # 开启平台SDK
@@ -17,13 +24,21 @@ if __name__ == '__main__':
     perceptionFlag = True
 
     result = ADCPlatform.start(serverUrl, username, password)
+
     if result:
         print("算法接入成功！")
         print("启动任务")
         ADCPlatform.start_task()
-
+        
         # init func get sensor data
         SensorId, Controller, PerceptionArgs = initial.init(perceptionFlag)
+
+        # multi thread
+        thread1 = threading.Thread(target=sensor.run, args=(SensorId, data, ))
+        thread2 = threading.Thread(target=perception.run, args=(perceptionFlag, data, PerceptionArgs, ))
+
+        thread1.start()
+        thread2.start()
 
         epoch = 1
         change = True
@@ -31,8 +46,6 @@ if __name__ == '__main__':
 
         # 启动算法接入任务控制车辆
         while True:
-            data = sensor.run(SensorId)
-            result = perception.run(perceptionFlag, data, PerceptionArgs)
             # decision = planning(result)
             control.run(Controller, decisionSpeed)
             # if(stop):
@@ -41,6 +54,8 @@ if __name__ == '__main__':
             epoch += 1
             if (epoch == 1000):
                 epoch = 1
+        thread1.join()
+        thread2.join()
 
         ADCPlatform.stop()
 
