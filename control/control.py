@@ -86,16 +86,7 @@ def run():
     # 车道线传感器id
     landLineId = 0
 
-    # get sensor
-    sensors = ADCPlatform.get_sensors()
-    for sensor in sensors:
-        if sensor.Name == "毫米波雷达":
-            radarId = sensor.ID
-        elif sensor.Name == "摄像机":
-            cameraId = sensor.ID
-        elif sensor.Name == "车道线传感器":
-            landLineId = sensor.ID
-        # print("名称：" + sensor.Name + ",ID:" + str(sensor.ID))
+
 
     while running:
         # 获取车辆控制数据包
@@ -105,12 +96,10 @@ def run():
             running = False
             break
         carSpeed = control_data_package.json['FS']
-        # carX = control_data_package.json['X']
-        # carY = control_data_package.json['Y']
 
         # 获取数据包 10101为雷达GPS等数据类型传感器id
-        landLine_package = ADCPlatform.get_data(landLineId)
-        data_package = ADCPlatform.get_data(radarId)# get rradar data to follow
+        # landLine_package = ADCPlatform.get_data(landLineId)
+        # data_package = ADCPlatform.get_data(radarId)# get rradar data to follow
 
         # 纵向障碍控制 speed pid update
         # radarValue = data_package.json[0]["Range"] * -1

@@ -15,8 +15,28 @@ if __name__ == '__main__':
         print("算法接入成功！")
         print("启动任务")
         ADCPlatform.start_task()
+
+        # init func get sensor data
+        # get sensor
+        sensors = ADCPlatform.get_sensors()
+        for sensor in sensors:
+            if sensor.Name == "毫米波雷达":
+                radarId = sensor.ID
+            elif sensor.Name == "摄像机":
+                cameraId = sensor.ID
+            elif sensor.Name == "车道线传感器":
+                landLineId = sensor.ID
+            # print("名称：" + sensor.Name + ",ID:" + str(sensor.ID))
+
+
         # 启动算法接入任务控制车辆
-        control.run()
+        while True:
+            # data = sensor()
+            # result = perception(data)
+            # decision = planning(result)
+            control.run()
+            # if(stop):
+            #     break
 
         # 停止平台
         ADCPlatform.stop()
