@@ -9,7 +9,7 @@ radarPid = pid.PID(speed_kp, speed_ki, 0)
 radarPidThread_1 = 6000
 radarPidThread_2 = 3000
 
-targetSpeed = 45.0 # 想要到达的速度
+targetSpeedInit = 45.0 # 想要到达的速度
 speed_kd = 0.5
 speedPid = pid.PID(speed_kp, 0, speed_kp)
 speedPidThread_1 = 10
@@ -20,7 +20,7 @@ def init():
     radarPid.clear()
 
     radarPid.setSetpoint(500.0)             # 跟车5m
-    speedPid.setSetpoint(targetSpeed)              # 保持40km/h
+    speedPid.setSetpoint(targetSpeedInit)              # 保持40km/h
 
 ''' xld - speed pid control
 加速时能够较快达到设定目标 
