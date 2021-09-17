@@ -16,7 +16,7 @@ def run(SensorId):
     landLine_package = ADCPlatform.get_data(landLineId)
     radar_package = ADCPlatform.get_data(radarId)
     image_package = ADCPlatform.get_image(cameraId)
-    print(image_package.timestamp)
+    # print(image_package.timestamp)
 
     data["control"] = control_data_package
     data["landLine"] = landLine_package

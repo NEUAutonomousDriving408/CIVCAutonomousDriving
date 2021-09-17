@@ -25,16 +25,23 @@ if __name__ == '__main__':
         # init func get sensor data
         SensorId, Controller, PerceptionArgs = initial.init(perceptionFlag)
 
+        epoch = 1
+        change = True
+        decisionSpeed = 60 # 速度控制
+
         # 启动算法接入任务控制车辆
         while True:
             data = sensor.run(SensorId)
             result = perception.run(perceptionFlag, data, PerceptionArgs)
             # decision = planning(result)
-            control.run(Controller)
+            control.run(Controller, decisionSpeed)
             # if(stop):
             #     break
 
-        # 停止平台
+            epoch += 1
+            if (epoch == 1000):
+                epoch = 1
+
         ADCPlatform.stop()
 
     else:
