@@ -14,7 +14,7 @@ if __name__ == '__main__':
     # 设置登录密码
     password = 'ps123456'
     # whether initialize perception model
-    perceptionFlag = False
+    perceptionFlag = True
 
     result = ADCPlatform.start(serverUrl, username, password)
     if result:
