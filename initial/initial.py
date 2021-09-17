@@ -1,7 +1,7 @@
 import ADCPlatform
-import torch
-from yolox.data.datasets import COCO_CLASSES
-from yolox.exp import get_exp
+# import torch
+# from yolox.data.datasets import COCO_CLASSES
+# from yolox.exp import get_exp
 import control.pid as pid
 import perception.DrivingDetection as detection
 
@@ -75,30 +75,30 @@ def init(perceptionFlag):
             model.half()  # to FP16
         model.eval()
 
-        if not args.trt:
-            if args.ckpt is None:
-                ckpt_file = os.path.join(file_name, "best_ckpt.pth")
-            else:
-                ckpt_file = args.ckpt
-            # logger.info("loading checkpoint")
-            ckpt = torch.load(ckpt_file, map_location="cpu")
-            # load the model state dict
-            model.load_state_dict(ckpt["model"])
+        # if not args.trt:
+        #     if args.ckpt is None:
+        #         ckpt_file = os.path.join(file_name, "best_ckpt.pth")
+        #     else:
+        #         ckpt_file = args.ckpt
+        #     # logger.info("loading checkpoint")
+        #     ckpt = torch.load(ckpt_file, map_location="cpu")
+        #     # load the model state dict
+        #     model.load_state_dict(ckpt["model"])
+        #
+        # if args.trt:
+        #     assert not args.fuse, "TensorRT model is not support model fusing!"
+        #     trt_file = os.path.join(file_name, "model_trt.pth")
+        #     assert os.path.exists(
+        #         trt_file
+        #     ), "TensorRT model is not found!\n Run python3 tools/trt.py first!"
+        #     model.head.decode_in_inference = False
+        #     decoder = model.head.decode_outputs
+        #     logger.info("Using TensorRT to inference")
+        # else:
+        #     trt_file = None
+        #     decoder = None
         
-        if args.trt:
-            assert not args.fuse, "TensorRT model is not support model fusing!"
-            trt_file = os.path.join(file_name, "model_trt.pth")
-            assert os.path.exists(
-                trt_file
-            ), "TensorRT model is not found!\n Run python3 tools/trt.py first!"
-            model.head.decode_in_inference = False
-            decoder = model.head.decode_outputs
-            logger.info("Using TensorRT to inference")
-        else:
-            trt_file = None
-            decoder = None
-        
-        predictor = detection.Predictor(model, exp, COCO_CLASSES, trt_file, decoder, args.device, args.fp16, args.legacy)
+        # predictor = detection.Predictor(model, exp, COCO_CLASSES, trt_file, decoder, args.device, args.fp16, args.legacy)
         print("percetion model load.")
     
     PercetionArgs = dict()

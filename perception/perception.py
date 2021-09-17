@@ -1,20 +1,20 @@
 import ADCPlatform
 import time
-from PIL import Image
-import numpy
-import torch
+# from PIL import Image
+# import numpy
+# import torch
 
 import perception.DrivingDetection as detection
 
 import sys
 sys.path.append("../")
 import control.pid as pid
-from yolox.data.datasets import COCO_CLASSES
+# from yolox.data.datasets import COCO_CLASSES
 
-def convert_image_to_numpy_ndarray(imageframe_byte):
-	#image2 = Image.fromarray(array) # image2 is a PIL image,array is a numpy
-	#array
-   return numpy.array(Image.open(imageframe_byte))
+# def convert_image_to_numpy_ndarray(imageframe_byte):
+# 	#image2 = Image.fromarray(array) # image2 is a PIL image,array is a numpy
+# 	#array
+#    return numpy.array(Image.open(imageframe_byte))
 
 def run(perceptionFlag, data, PerceptionArgs):
     # data : a dict of 4 elements
@@ -25,10 +25,10 @@ def run(perceptionFlag, data, PerceptionArgs):
         return None
 
     time.sleep(1)
-    while True:
-        img = convert_image_to_numpy_ndarray(data["image"].byte)
-        # print(img.shape)
-        detection.driving_runtime(PerceptionArgs["predictor"], None, img, PerceptionArgs["args"])
+    # while True:
+    #     img = convert_image_to_numpy_ndarray(data["image"].byte)
+    #     # print(img.shape)
+    #     detection.driving_runtime(PerceptionArgs["predictor"], None, img, PerceptionArgs["args"])
 
     return None
 

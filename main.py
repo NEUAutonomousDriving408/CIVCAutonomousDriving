@@ -21,7 +21,7 @@ if __name__ == '__main__':
     # 设置登录密码
     password = 'ps123456'
     # whether initialize perception model
-    perceptionFlag = True
+    perceptionFlag = False
 
     result = ADCPlatform.start(serverUrl, username, password)
 
@@ -34,16 +34,15 @@ if __name__ == '__main__':
         SensorId, Controller, PerceptionArgs = initial.init(perceptionFlag)
 
         # multi thread
-        thread1 = threading.Thread(target=sensor.run, args=(SensorId, data, ))
-        thread2 = threading.Thread(target=perception.run, args=(perceptionFlag, data, PerceptionArgs, ))
+        # thread1 = threading.Thread(target=sensor.run, args=(SensorId, data, ))
+        # thread2 = threading.Thread(target=perception.run, args=(perceptionFlag, data, PerceptionArgs, ))
 
-        thread1.start()
-        thread2.start()
+        # thread1.start()
+        # thread2.start()
 
         epoch = 1
         change = True
         decisionSpeed = 60 # 速度控制
-
         # 启动算法接入任务控制车辆
         while True:
             # decision = planning(result)
