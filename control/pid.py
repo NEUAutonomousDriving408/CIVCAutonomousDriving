@@ -82,5 +82,5 @@ class PID:
 
     def setSetpoint(self, target):
         """Determines how aggressively the PID reacts to the current error with setting Derivative Gain"""
-        self.Setpoint = target
+        self.SetPoint = target
 
