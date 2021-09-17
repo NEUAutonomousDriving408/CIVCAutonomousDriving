@@ -1,6 +1,8 @@
 import ADCPlatform
 import control
 import initial.initial as initial
+import sensor.loadsensor as sensor
+import perception.perception as perception
 
 
 if __name__ == '__main__':
@@ -21,13 +23,12 @@ if __name__ == '__main__':
         ADCPlatform.start_task()
 
         # init func get sensor data
-        SensorId, Controller = initial.init(perceptionFlag)
-
+        SensorId, Controller, PerceptionArgs = initial.init(perceptionFlag)
 
         # 启动算法接入任务控制车辆
         while True:
-            # data = sensor(SensorId)
-            # result = perception(data)
+            data = sensor.run(SensorId)
+            result = perception.run(perceptionFlag, data, PerceptionArgs)
             # decision = planning(result)
             control.run(Controller)
             # if(stop):

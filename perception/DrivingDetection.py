@@ -46,11 +46,11 @@ def make_parser():
     parser.add_argument(
         "-f",
         "--exp_file",
-        default="/home/huangxh/桌面/icvrcautonomous-driving/YOLOX/exps/default/yolox_tiny.py",
+        default="./YOLOX/exps/default/yolox_tiny.py",
         type=str,
         help="pls input your experiment description file",
     )
-    parser.add_argument("-c", "--ckpt", default="/home/huangxh/桌面/icvrcautonomous-driving/YOLOX/pretrainedmodel/yolox_tiny.pth", type=str, help="ckpt for eval")
+    parser.add_argument("-c", "--ckpt", default=".//YOLOX/pretrainedmodel/yolox_tiny.pth", type=str, help="ckpt for eval")
     parser.add_argument(
         "--device",
         default="gpu",
