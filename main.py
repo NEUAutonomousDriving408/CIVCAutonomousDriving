@@ -24,16 +24,21 @@ if __name__ == '__main__':
         SensorId, Controller = initial.init(perceptionFlag)
 
 
-        # 启动算法接入任务控制车辆
-        while True:
+        epoch = 1;
+        change = True
+        decisionSpeed = 60 # 速度控制
+        while True: # start
             # data = sensor(SensorId)
             # result = perception(data)
             # decision = planning(result)
-            control.run(Controller)
+            control.run(Controller, decisionSpeed)
             # if(stop):
             #     break
 
-        # 停止平台
+            epoch += 1
+            if (epoch == 1000):
+                epoch = 1
+
         ADCPlatform.stop()
 
     else:

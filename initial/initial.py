@@ -1,7 +1,6 @@
 import ADCPlatform
 import control.pid as pid
 
-
 class ControlData(object):
     def __init__(self):
         self.speed_kp = 1.20
@@ -10,7 +9,7 @@ class ControlData(object):
         self.radarPidThread_1 = 6000
         self.radarPidThread_2 = 3000
 
-        self.targetSpeedInit = 20.0 # 想要到达的速度
+        self.targetSpeedInit = 60.0 # 想要到达的速度
         self.speed_kd = 0.5
         self.speedPid = pid.PID(self.speed_kp, 0, self.speed_kp)
         self.speedPidThread_1 = 10

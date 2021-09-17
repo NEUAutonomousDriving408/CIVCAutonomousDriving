@@ -1,7 +1,7 @@
 import ADCPlatform
-import time
-# import control.pid as pid
 
+speedPidThread_1 = 10 # 控制阈值1
+speedPidThread_2 = 2 # 控制阈值2
 ''' xld - speed pid control
 加速时能够较快达到设定目标 
 减速时能较快减到设定速度
@@ -11,23 +11,19 @@ stage 3 - 微调
 stage 4 - 快速减速
 stage 5 - 减速微调
 '''
-
-speedPidThread_1 = 10
-speedPidThread_2 = 2
-
 def lontitudeControlSpeed(speed, lonPid):
     lonPid.update(speed-5.0)
     if (lonPid.output > speedPidThread_1):# 加速阶段
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 1')
         lonPid.thorro_ = 1
         lonPid.brake_ = 0
-    elif (lonPid.output > speedPidThread_2):# 稳定控速阶段
+    elif (lonPid.output > speedPidThread_2): # 稳定控速阶段
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 2')
-        lonPid.thorro_ = min((lonPid.output / speedPidThread_1) * 0.85,1.0) #
-        lonPid.brake_= min(((speedPidThread_1 - lonPid.output) / speedPidThread_1) * 0.1,1.0) #
+        lonPid.thorro_ = min((lonPid.output / speedPidThread_1) * 0.85, 1.0)
+        lonPid.brake_= min(((speedPidThread_1 - lonPid.output) / speedPidThread_1) * 0.1, 1.0)
     elif (lonPid.output > 0):# 下侧 微调
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 3')
-        lonPid.thorro_ = (lonPid.output / speedPidThread_2) * 0.3#
+        lonPid.thorro_ = (lonPid.output / speedPidThread_2) * 0.3
         lonPid.brake_= ((speedPidThread_2 - lonPid.output) / speedPidThread_2) * 0.2
     elif (lonPid.output < -1 * speedPidThread_1):# 减速阶段
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 4')
@@ -38,6 +34,7 @@ def lontitudeControlSpeed(speed, lonPid):
         lonPid.thorro_ = (-1 * lonPid.output / speedPidThread_2) * 0.2
         lonPid.brake_= ((speedPidThread_2 - (-1 * lonPid.output)) / speedPidThread_2) * 0.4
     # print(lonPid.thorro_, '    ', lonPid.brake_)
+
 
 # radar 障碍控制 与速度有关
 # def lontitudeControlRadar(value, lonPid):
@@ -59,8 +56,14 @@ def lontitudeControlSpeed(speed, lonPid):
 #         lonPid.brake_= ((radarPidThread_2 - lonPid.output) / radarPidThread_2) * 0.4 #
 
 
-def run(Controller):
- 
+''' xld - speed control
+控制发送频率 100hz
+'''
+def run(Controller, decisionSpeed):
+
+    # 调整速度
+    Controller.speedPid.setSetpoint(decisionSpeed)
+
     # 获取车辆控制数据包
     control_data_package = ADCPlatform.get_control_data()
     if not control_data_package:
@@ -77,9 +80,6 @@ def run(Controller):
     # 纵向速度控制 speed pid update
     lontitudeControlSpeed(carSpeed, Controller.speedPid)
     ADCPlatform.control(Controller.speedPid.thorro_, 0, Controller.speedPid.brake_, 1)
-
-    # ADCPlatform.control(0.7, 0, 0,-1)
-    # print("brake")
 
     # 休眠30毫秒
     # time.sleep(0.003)
