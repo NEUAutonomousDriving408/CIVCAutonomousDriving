@@ -40,12 +40,16 @@ if __name__ == '__main__':
         # thread1.start()
         # thread2.start()
 
+        """
+        这里加入感知图片返回数据主要改planning
+        """
+
         epoch = 1
-        change = True
-        decisionSpeed = 60 # 速度控制
-        # 启动算法接入任务控制车辆
+        decisionSpeed = 60 # 快速起步
         while True:
-            # decision = planning(result)
+            # decision = planning.run(data, PerceptionArgs)
+            if (epoch % 100 == 0):
+                decisionSpeed = 45
             control.run(Controller, decisionSpeed)
             # if(stop):
             #     break
