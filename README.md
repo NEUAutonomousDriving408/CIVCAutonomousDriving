@@ -12,15 +12,17 @@ git clone git@gitee.com:icvrc2021-neu/icvrcautonomous-driving.git 到本地，�
 # 操作查询
 ## 分支操作
 #### 创建分支
-git checkout -b dev，这条命令把创建本地分支和切换到该分支的功能结合起来了，即基于当前分支master创建本地分支dev并切换到该分支下。
+`创建新分支并切换`
+git checkout -b dev
+`提交新分支到远程`
+git push --set-upstream origin dev
 
 #### 删除分支
-1.git branch 查看本地分支
+1.1.git branch 查看本地分支
+1.2.查看远程分支 git branch -r
 
 2.删除本地分支 xld-control-pid。 
 (1) git checkout xld-control-changelane 删除分支前先切换到其他分支 
 (2) git branch -D xld-control-pid
 
-3.查看远程分支 git branch -r
-
-4.删除远程分支 git push origin --delete xld-control-pid END
+3.删除远程分支 git push origin --delete xld-control-pid END
