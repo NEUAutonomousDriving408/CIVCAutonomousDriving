@@ -43,14 +43,13 @@ if __name__ == '__main__':
         """
         这里加入感知图片返回数据主要改planning
         """
-
         epoch = 1
         decisionSpeed = 60 # 快速起步
+        changelane = False
         while True:
-            # decision = planning.run(data, PerceptionArgs)
-            if (epoch % 100 == 0):
-                decisionSpeed = 45
-            control.run(Controller, decisionSpeed)
+            # decision = planning.run(data, PerceptionArgs, changelane)
+
+            control.run(Controller, decisionSpeed, changelane)
             # if(stop):
             #     break
 
