@@ -1,5 +1,6 @@
 import ADCPlatform
 import control
+import initial
 
 
 if __name__ == '__main__':
@@ -10,6 +11,9 @@ if __name__ == '__main__':
     username = 'YYX_zdjs'
     # 设置登录密码
     password = 'ps123456'
+    # whether initialize perception model
+    perceptionFlag = False
+
     result = ADCPlatform.start(serverUrl, username, password)
     if result:
         print("算法接入成功！")
@@ -17,21 +21,12 @@ if __name__ == '__main__':
         ADCPlatform.start_task()
 
         # init func get sensor data
-        # get sensor
-        sensors = ADCPlatform.get_sensors()
-        for sensor in sensors:
-            if sensor.Name == "毫米波雷达":
-                radarId = sensor.ID
-            elif sensor.Name == "摄像机":
-                cameraId = sensor.ID
-            elif sensor.Name == "车道线传感器":
-                landLineId = sensor.ID
-            # print("名称：" + sensor.Name + ",ID:" + str(sensor.ID))
+        SensorId = initial.init(perceptionFlag)
 
 
         # 启动算法接入任务控制车辆
         while True:
-            # data = sensor()
+            data = sensor(SensorId)
             # result = perception(data)
             # decision = planning(result)
             control.run()
