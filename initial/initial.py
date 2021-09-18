@@ -1,23 +1,24 @@
 import ADCPlatform
-import torch
-from yolox.data.datasets import COCO_CLASSES
-from yolox.exp import get_exp
+# import torch
+# from yolox.data.datasets import COCO_CLASSES
+# from yolox.exp import get_exp
 import control.pid as pid
 import perception.DrivingDetection as detection
 
 class CarState(object):
     def __init__(self):
-        self.speed = 0
-        self.cao = 0
-        self.changelanestage = 0
-        self.cardecision = 'speedup'
-        self.midlane = 0 # 8 0 -8
+        self.speed = 0              # 车辆当前速度
+        self.cao = 0                # 车辆当前姿态
+        self.cardecision = 'speedup'# planning计算得到决策
+        self.midlane = 0            # 7 0 -7 latpid 参考 target
+        self.positionnow = 0        # 两车道线A1求和
+        self.changing = False       # 处于超车状态时为True
 
 class ControlData(object):
     def __init__(self):
-        self.lat_kp = 1.20
-        self.lat_ki = 0.0
-        self.lat_kd = 6.5
+        self.lat_kp = 1.10
+        self.lat_ki = 0.08
+        self.lat_kd = 6.2
         self.latPid = pid.PID(self.lat_kp, self.lat_ki, self.lat_kd)
 
         self.targetSpeedInit = 60.0 # 想要到达的速度
@@ -86,30 +87,30 @@ def init(perceptionFlag):
             model.half()  # to FP16
         model.eval()
 
-        if not args.trt:
-            if args.ckpt is None:
-                ckpt_file = os.path.join(file_name, "best_ckpt.pth")
-            else:
-                ckpt_file = args.ckpt
-            # logger.info("loading checkpoint")
-            ckpt = torch.load(ckpt_file, map_location="cpu")
-            # load the model state dict
-            model.load_state_dict(ckpt["model"])
-
-        if args.trt:
-            assert not args.fuse, "TensorRT model is not support model fusing!"
-            trt_file = os.path.join(file_name, "model_trt.pth")
-            assert os.path.exists(
-                trt_file
-            ), "TensorRT model is not found!\n Run python3 tools/trt.py first!"
-            model.head.decode_in_inference = False
-            decoder = model.head.decode_outputs
-            logger.info("Using TensorRT to inference")
-        else:
-            trt_file = None
-            decoder = None
+        # if not args.trt:
+        #     if args.ckpt is None:
+        #         ckpt_file = os.path.join(file_name, "best_ckpt.pth")
+        #     else:
+        #         ckpt_file = args.ckpt
+        #     # logger.info("loading checkpoint")
+        #     ckpt = torch.load(ckpt_file, map_location="cpu")
+        #     # load the model state dict
+        #     model.load_state_dict(ckpt["model"])
+        #
+        # if args.trt:
+        #     assert not args.fuse, "TensorRT model is not support model fusing!"
+        #     trt_file = os.path.join(file_name, "model_trt.pth")
+        #     assert os.path.exists(
+        #         trt_file
+        #     ), "TensorRT model is not found!\n Run python3 tools/trt.py first!"
+        #     model.head.decode_in_inference = False
+        #     decoder = model.head.decode_outputs
+        #     logger.info("Using TensorRT to inference")
+        # else:
+        #     trt_file = None
+        #     decoder = None
         
-        predictor = detection.Predictor(model, exp, COCO_CLASSES, trt_file, decoder, args.device, args.fp16, args.legacy)
+        # predictor = detection.Predictor(model, exp, COCO_CLASSES, trt_file, decoder, args.device, args.fp16, args.legacy)
         print("percetion model load.")
     
     PercetionArgs = dict()

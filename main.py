@@ -22,7 +22,7 @@ if __name__ == '__main__':
     # 设置登录密码
     password = 'ps123456'
     # whether initialize perception model
-    perceptionFlag = True
+    perceptionFlag = False
 
     result = ADCPlatform.start(serverUrl, username, password)
 
@@ -58,7 +58,11 @@ if __name__ == '__main__':
             control.run(Controller, MyCar, SensorId, direction)
 
             if (MyCar.speed > 58):
-                MyCar.cardecision = 'changelane'
+                MyCar.cardecision = 'follow'
+            if (MyCar.cardecision == 'follow'
+                    and not MyCar.changing
+                    and MyCar.speed < 41):
+                MyCar.cardecision = 'overtake'
                 direction = 'right'
 
             epoch += 1
