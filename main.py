@@ -44,10 +44,9 @@ if __name__ == '__main__':
         这里加入感知图片返回数据主要改planning
         """
         epoch = 1
-        # decision = 'speedup' # planning 修改decision 默认初始化为speedup
         while True:
             # decision = planning.run(data, PerceptionArgs)
-            control.run(Controller, MyCar)
+            control.run(Controller, MyCar, SensorId)
 
             if (MyCar.speed > 58):
                 MyCar.cardecision = 'changelane'

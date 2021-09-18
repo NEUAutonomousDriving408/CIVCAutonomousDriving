@@ -32,8 +32,9 @@ class PID:
 
         self.output = 0.0
 
-        self.thorro_= 0.0
-        self.brake_= 0.0
+        self.thorro_ = 0.0
+        self.brake_ = 0.0
+        self.steer_ = 0.0
 
     def update(self, feedback_value):
         """Calculates PID value for given reference feedback

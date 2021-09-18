@@ -13,6 +13,13 @@ import perception.DrivingDetection as detection
 
 speedPidThread_1 = 10 # 控制阈值1
 speedPidThread_2 = 2 # 控制阈值2
+
+
+def latitudeControlpos(positionnow, latPid):
+    latPid.update(positionnow)
+    latPid.steer_ = latPid.output * -1
+
+
 ''' xld - speed pid control
 加速时能够较快达到设定目标 
 减速时能较快减到设定速度
@@ -47,29 +54,8 @@ def lontitudeControlSpeed(speed, lonPid):
     # print(lonPid.thorro_, '    ', lonPid.brake_)
 
 
-# radar 障碍控制 与速度有关
-# def lontitudeControlRadar(value, lonPid):
-#     if(value): # for none type error
-#         lonPid.update(value)
-#         valuelast = value
-#     else:
-#         lonPid.update(lonPid.Setpoint)# 一般不会出现
-
-#     # pid to control
-#     if(lonPid.output >radarPidThread_1):# far away from front car
-#         lonPid.thorro_ =0.85
-#         lonPid.brake_ = 0
-#     elif(lonPid.output >radarPidThread_2):# brake softly
-#         lonPid.thorro_ = (lonPid.output / radarPidThread_1) * 0.65 #
-#         lonPid.brake_= ((radarPidThread_1 - lonPid.output) / radarPidThread_1) * 0.1 #
-#     else:
-#         lonPid.thorro_ = (lonPid.output / radarPidThread_2) * 0.3 #
-#         lonPid.brake_= ((radarPidThread_2 - lonPid.output) / radarPidThread_2) * 0.4 #
-
-
 def changelanefun(side, MyCar):
     # steer -420 -- 420
-    print(MyCar.cao)
 
     if (MyCar.speed - 40 > 2): # 稍等一会儿
         return 0
@@ -80,7 +66,7 @@ def changelanefun(side, MyCar):
         MyCar.changelanestage = 2
     elif (abs(MyCar.cao) < 3 and MyCar.changelanestage == 2):
         MyCar.changelanestage = 3
-    elif (abs(MyCar.cao) < 0.01 and MyCar.changelanestage == 3):
+    elif (abs(MyCar.cao) < 0.05 and MyCar.changelanestage == 3):
         MyCar.cardecision = 'keeplane'
         MyCar.changelanestage = 0
 
@@ -99,7 +85,7 @@ def changelanefun(side, MyCar):
 ''' xld - speed control
 控制发送频率 100hz
 '''
-def run(Controller, MyCar):
+def run(Controller, MyCar, SensorID):
 
     # 如果decision被planning进行了修改
     # 调整速度
@@ -112,25 +98,30 @@ def run(Controller, MyCar):
 
     # 获取车辆控制数据包
     control_data_package = ADCPlatform.get_control_data()
+    # 获取数据包 10101为雷达GPS等数据类型传感器id
+    landLine_package = ADCPlatform.get_data(SensorID["landLine"])
+    positionnow = landLine_package.json[2]['A1'] + landLine_package.json[1]['A1']
     if not control_data_package:
         print("任务结束")
 
     MyCar.speed = control_data_package.json['FS']
     MyCar.cao = control_data_package.json['CAO']
 
-    if (MyCar.cardecision == 'changelane'):
-        steerout = changelanefun('left', MyCar)
-        lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
-        ADCPlatform.control(Controller.speedPid.thorro_, steerout, Controller.speedPid.brake_, 1)
-        return
+    # if (MyCar.cardecision == 'changelane'):
+    #     steerout = changelanefun('left', MyCar)
+    #     lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
+    #     ADCPlatform.control(Controller.speedPid.thorro_, steerout, Controller.speedPid.brake_, 1)
+    #     return
 
-    # 获取数据包 10101为雷达GPS等数据类型传感器id
-    # landLine_package = ADCPlatform.get_data(landLineId)
-    # data_package = ADCPlatform.get_data(radarId)# get rradar data to follow
-
-    # 纵向障碍控制 speed pid update
-    # radarValue = data_package.json[0]["Range"] * -1
-    # lontitudeControlRadar(radarValue, radarPid)
-    # 纵向速度控制 speed pid update
+    # 纵向控制 thorro_ and brake_
     lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
-    ADCPlatform.control(Controller.speedPid.thorro_, 0, Controller.speedPid.brake_, 1)
+
+    # 横向控制 steer_
+    if (MyCar.cardecision == 'changelane' and MyCar.speed < 41):
+        Controller.latPid.setSetpoint(6.8)
+        latitudeControlpos(positionnow, Controller.latPid)
+    else:
+        latitudeControlpos(positionnow, Controller.latPid)
+
+    ADCPlatform.control(Controller.speedPid.thorro_, Controller.latPid.steer_, Controller.speedPid.brake_, 1)
+    # ADCPlatform.control(Controller.speedPid.thorro_, 0, Controller.speedPid.brake_, 1)

@@ -11,16 +11,18 @@ class CarState(object):
         self.cao = 0
         self.changelanestage = 0
         self.cardecision = 'speedup'
+        self.midlane = 0 # 8 0 -8
 
 class ControlData(object):
     def __init__(self):
-        self.speed_kp = 1.20
-        self.speed_ki = 0.02
-        self.radarPid = pid.PID(self.speed_kp, self.speed_ki, 0)
-        self.radarPidThread_1 = 6000
-        self.radarPidThread_2 = 3000
+        self.lat_kp = 2.20
+        self.lat_ki = 0.0
+        self.lat_kd = 6.0
+        self.latPid = pid.PID(self.lat_kp, self.lat_ki, self.lat_kd)
 
         self.targetSpeedInit = 60.0 # 想要到达的速度
+        self.speed_kp = 1.20
+        self.speed_ki = 0.02
         self.speed_kd = 0.5
         self.speedPid = pid.PID(self.speed_kp, 0, self.speed_kp)
         self.speedPidThread_1 = 10
@@ -29,8 +31,8 @@ class ControlData(object):
     
     def initPID(self):
         self.speedPid.clear()
-        self.radarPid.clear()
-        self.radarPid.setSetpoint(500.0)             # 跟车5m
+        self.latPid.clear()
+        self.latPid.setSetpoint(0)             # lat aim 0
         self.speedPid.setSetpoint(self.targetSpeedInit)              # 保持40km/h
 
 def init(perceptionFlag):
