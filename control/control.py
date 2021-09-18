@@ -67,35 +67,61 @@ def lontitudeControlSpeed(speed, lonPid):
 #         lonPid.brake_= ((radarPidThread_2 - lonPid.output) / radarPidThread_2) * 0.4 #
 
 
-def changelanefun():
+def changelanefun(side, MyCar):
+    # steer -420 -- 420
+    print(MyCar.cao)
 
-    pass
+    if (MyCar.speed - 40 > 2): # 稍等一会儿
+        return 0
 
+    if (MyCar.cao < 9.5 and MyCar.changelanestage == 0):
+        MyCar.changelanestage = 1
+    elif (MyCar.cao > 9.5 and MyCar.changelanestage == 1):
+        MyCar.changelanestage = 2
+    elif (MyCar.cao < 3 and MyCar.changelanestage == 2):
+        MyCar.changelanestage = 3
+    elif (abs(MyCar.cao) < 0.1 and MyCar.changelanestage == 3):
+        MyCar.cardecision = 'keeplane'
+        MyCar.changelanestage = 0
+
+    # TODO:add position fineturn
+    if(side == 'right' and MyCar.changelanestage == 1):
+        return 40
+    elif (side == 'right' and MyCar.changelanestage == 2):
+        return -40
+    elif(side == 'left' and MyCar.changelanestage == 1):
+        return -40
+    elif (side == 'left' and MyCar.changelanestage == 2):
+        return 40
+    elif (MyCar.changelanestage == 3):
+        return 0
 
 ''' xld - speed control
 控制发送频率 100hz
 '''
-changLaneState = False
-def run(Controller, aimSpeed, decision):
+def run(Controller, MyCar):
 
     # 如果decision被planning进行了修改
-    if (decision == 'speedup'):
-        aimSpeed = 60
-    elif (decision == 'keeplane'):
-        aimSpeed = 40
-    elif (decision == 'changelane'):
-        aimSpeed = 40
-        changLaneState = True
-        changelanefun()
-
     # 调整速度
-    Controller.speedPid.setSetpoint(aimSpeed)
+    if (MyCar.cardecision == 'speedup'):
+        Controller.speedPid.setSetpoint(60)
+    elif (MyCar.cardecision == 'keeplane'):
+        Controller.speedPid.setSetpoint(40)
+    elif (MyCar.cardecision == 'changelane'):
+        Controller.speedPid.setSetpoint(40)
 
     # 获取车辆控制数据包
     control_data_package = ADCPlatform.get_control_data()
     if not control_data_package:
         print("任务结束")
-    carSpeed = control_data_package.json['FS']
+    MyCar.speed = control_data_package.json['FS']
+    MyCar.cao = control_data_package.json['CAO']
+
+    if (MyCar.cardecision == 'changelane'):
+        steerout = changelanefun('right', MyCar)
+        lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
+        ADCPlatform.control(Controller.speedPid.thorro_, steerout, Controller.speedPid.brake_, 1)
+        return
 
     # 获取数据包 10101为雷达GPS等数据类型传感器id
     # landLine_package = ADCPlatform.get_data(landLineId)
@@ -105,5 +131,5 @@ def run(Controller, aimSpeed, decision):
     # radarValue = data_package.json[0]["Range"] * -1
     # lontitudeControlRadar(radarValue, radarPid)
     # 纵向速度控制 speed pid update
-    lontitudeControlSpeed(carSpeed, Controller.speedPid)
+    lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
     ADCPlatform.control(Controller.speedPid.thorro_, 0, Controller.speedPid.brake_, 1)

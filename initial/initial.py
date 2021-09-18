@@ -5,6 +5,13 @@ import ADCPlatform
 import control.pid as pid
 import perception.DrivingDetection as detection
 
+class CarState(object):
+    def __init__(self):
+        self.speed = 0
+        self.cao = 0
+        self.changelanestage = 0
+        self.cardecision = 'speedup'
+
 class ControlData(object):
     def __init__(self):
         self.speed_kp = 1.20
@@ -54,6 +61,8 @@ def init(perceptionFlag):
     # control parameter initialization
     Controller = ControlData()
     Controller.initPID()
+
+    MyCar = CarState()
 
     # if perceptionFlag is True, then initialize yolox model
     # initialize network in perception
@@ -105,7 +114,7 @@ def init(perceptionFlag):
     PercetionArgs["predictor"] = predictor
     PercetionArgs["args"] = args
 
-    return SensorId, Controller, PercetionArgs
+    return SensorId, Controller, PercetionArgs, MyCar
 
     
 

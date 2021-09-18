@@ -31,7 +31,7 @@ if __name__ == '__main__':
         ADCPlatform.start_task()
         
         # init func get sensor data
-        SensorId, Controller, PerceptionArgs = initial.init(perceptionFlag)
+        SensorId, Controller, PerceptionArgs, MyCar = initial.init(perceptionFlag)
 
         # multi thread
         # thread1 = threading.Thread(target=sensor.run, args=(SensorId, data, ))
@@ -44,10 +44,13 @@ if __name__ == '__main__':
         这里加入感知图片返回数据主要改planning
         """
         epoch = 1
-        decision = 'speedup' # planning 修改decision 默认初始化为speedup
+        # decision = 'speedup' # planning 修改decision 默认初始化为speedup
         while True:
             # decision = planning.run(data, PerceptionArgs)
-            control.run(Controller, 40, decision)
+            control.run(Controller, MyCar)
+
+            if (MyCar.speed > 58):
+                MyCar.cardecision = 'changelane'
 
             epoch += 1
             if (epoch == 1000):
