@@ -11,6 +11,7 @@ data["landLine"] = None
 data["radar"] = None
 data["image"] = None
 result = None
+distance = {"data": float('inf')}
 
 if __name__ == '__main__':
     # 开启平台SDK
@@ -35,7 +36,7 @@ if __name__ == '__main__':
 
         # multi thread
         thread1 = threading.Thread(target=sensor.run, args=(SensorId, data, ))
-        thread2 = threading.Thread(target=perception.run, args=(perceptionFlag, data, PerceptionArgs, ))
+        thread2 = threading.Thread(target=perception.run, args=(perceptionFlag, data, PerceptionArgs, distance, ))
 
         thread1.start()
         thread2.start()
@@ -43,9 +44,16 @@ if __name__ == '__main__':
         """
         这里加入感知图片返回数据主要改planning
         """
+        previous_distance = float('inf')
+        current_distance = float('inf')
+
         epoch = 1
         direction = 'mid'
         while True:
+            current_distance = distance["data"]
+            print("current_distance: ", current_distance)
+
+
             # decision = planning.run(data, PerceptionArgs)
             control.run(Controller, MyCar, SensorId, direction)
 

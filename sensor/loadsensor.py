@@ -1,11 +1,5 @@
 import ADCPlatform
 
-# data = dict()
-# data["control"] = None
-# data["landLine"] = None
-# data["radar"] = None
-# data["image"] = None
-
 def run(SensorId, data):
 
     while True:
@@ -24,5 +18,4 @@ def run(SensorId, data):
         data["landLine"] = landLine_package
         # data["radar"] = radar_package
         data["image"] = image_package
-        print("sensor")
     return data

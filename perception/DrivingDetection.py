@@ -4,23 +4,38 @@
 
 import sys
 sys.path.append("../")
-# import ADCPlatform
+import ADCPlatform
 import argparse
 import os
 import time
-# from loguru import logger
-#
-# import cv2
-#
-# import torch
-# import numpy as np
-#
-# from yolox.data.data_augment import ValTransform
-# from yolox.data.datasets import COCO_CLASSES
-# from yolox.exp import get_exp
-# from yolox.utils import fuse_model, get_model_info, postprocess, vis
+from loguru import logger
+
+import cv2
+
+import torch
+import numpy as np
+
+from yolox.data.data_augment import ValTransform
+from yolox.data.datasets import COCO_CLASSES
+from yolox.exp import get_exp
+from yolox.utils import fuse_model, get_model_info, postprocess, vis
 
 IMAGE_EXT = [".jpg", ".jpeg", ".webp", ".bmp", ".png"]
+
+# hyper parameters of single camera distance estimation
+# mm
+IMAGE_WIDTH = 480
+IMAGE_HEIGHT = 360
+CAMERA_FOCAL_LENGTH = 35
+CAMERA_PIXEL_LENGTH = 0.1738
+VEHICLE_LENGTH = 4780
+VEHICLE_WIDTH = 2230
+VEHICLE_HEIGHT = 1650
+
+def distance_estimation(x0, y0, x1, y1, args):
+    temp1 = (VEHICLE_WIDTH * CAMERA_FOCAL_LENGTH) / (CAMERA_PIXEL_LENGTH * (x1 - x0) / (args.tsize / IMAGE_WIDTH))
+    temp2 = (VEHICLE_HEIGHT * CAMERA_FOCAL_LENGTH) / (CAMERA_PIXEL_LENGTH * (y1 - y0) / (args.tsize / IMAGE_WIDTH))
+    return (temp1 + temp2) / 2000
 
 
 def make_parser():
@@ -243,24 +258,24 @@ def imageflow_demo(predictor, vis_folder, current_time, args):
         else:
             break
 
-
 def driving_runtime(predictor, vis_folder, image, args):
     outputs, img_info = predictor.inference(image)
+    distance = torch.tensor(float('inf'))
+    if outputs[0] is not None:
+        for i in range(outputs[0].shape[0]):
+            # class name is car or truck, and score greater than threshold
+            if outputs[0][i][4] * outputs[0][i][5] > predictor.confthre and (outputs[0][i][6] == 2 or outputs[0][i][6] == 7):
+                centroidX = outputs[0][i][0] + (outputs[0][i][2] - outputs[0][i][0]) / 2
+                bottomY = outputs[0][i][3]
+                if centroidX > 312 and centroidX < 328 and bottomY < 350:
+                    distance = distance_estimation(outputs[0][i][0].cpu().clone(), outputs[0][i][1].cpu().clone(), outputs[0][i][2].cpu().clone(), outputs[0][i][3].cpu().clone(), args)
+                    # print(i, distance)
     result_image = predictor.visual(outputs[0], img_info, predictor.confthre)
     img = cv2.cvtColor(result_image, cv2.COLOR_RGB2BGR)
     cv2.imshow("AfterProcessing", img)
     cv2.waitKey(1)
-    # if save_result:
-    #     save_folder = os.path.join(
-    #         vis_folder, time.strftime("%Y_%m_%d_%H_%M_%S", current_time)
-    #     )
-    #     os.makedirs(save_folder, exist_ok=True)
-    #     save_file_name = os.path.join(save_folder, os.path.basename(image_name))
-    #     logger.info("Saving detection result in {}".format(save_file_name))
-    #     cv2.imwrite(save_file_name, result_image)
-    # ch = cv2.waitKey(0)
-    # if ch == 27 or ch == ord("q") or ch == ord("Q"):
-    #     break
+    return distance
+
 
 def main(exp, args):
     if not args.experiment_name:

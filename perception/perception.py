@@ -12,11 +12,9 @@ import control.pid as pid
 from yolox.data.datasets import COCO_CLASSES
 
 def convert_image_to_numpy_ndarray(imageframe_byte):
-	#image2 = Image.fromarray(array) # image2 is a PIL image,array is a numpy
-	#array
    return numpy.array(Image.open(imageframe_byte))
 
-def run(perceptionFlag, data, PerceptionArgs):
+def run(perceptionFlag, data, PerceptionArgs, distance):
     # data : a dict of 4 elements
     # including "control", "landLine", "radar" and "image"
     # PerceptionArgs : a dict of 2 elements
@@ -24,11 +22,12 @@ def run(perceptionFlag, data, PerceptionArgs):
     if not perceptionFlag:
         return None
 
-    time.sleep(1)
+    time.sleep(0.5)
     while True:
         img = convert_image_to_numpy_ndarray(data["image"].byte)
-        # print(img.shape)
-        detection.driving_runtime(PerceptionArgs["predictor"], None, img, PerceptionArgs["args"])
+        result = detection.driving_runtime(PerceptionArgs["predictor"], None, img, PerceptionArgs["args"])
+        distance = {"data": result.item()}
+        # print("distance : ", distance.item())
 
     return None
 
