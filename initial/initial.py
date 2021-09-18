@@ -7,13 +7,12 @@ import perception.DrivingDetection as detection
 
 class CarState(object):
     def __init__(self):
-        self.speed = 0
-        self.cao = 0
-        self.changelanestage = 0
-        self.cardecision = 'speedup'
-        self.midlane = 0 # 7 0 -7
-        self.positionnow = 0
-        self.changing = False
+        self.speed = 0              # 车辆当前速度
+        self.cao = 0                # 车辆当前姿态
+        self.cardecision = 'speedup'# planning计算得到决策
+        self.midlane = 0            # 7 0 -7 latpid 参考 target
+        self.positionnow = 0        # 两车道线A1求和
+        self.changing = False       # 处于超车状态时为True
 
 class ControlData(object):
     def __init__(self):

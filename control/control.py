@@ -16,6 +16,7 @@ speedPidThread_2 = 2 # 控制阈值2
 
 ''' xld - lat pid control
 定速巡航下进行变道
+positionnow = 车道多项式 A1之和
 steer_ - pid计算方向盘输出
 '''
 def latitudeControlpos(positionnow, latPid):
@@ -60,6 +61,7 @@ def speedupJob(Controller, MyCar):
     Controller.speedPid.setSetpoint(60)
     # 纵向控制 thorro_ and brake_
     lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
+    # 横向控制 steer_
     latitudeControlpos(MyCar.positionnow, Controller.latPid)
     ADCPlatform.control(Controller.speedPid.thorro_, Controller.latPid.steer_, Controller.speedPid.brake_, 1)
 
@@ -67,6 +69,7 @@ def followJob(Controller, MyCar):
     Controller.speedPid.setSetpoint(40)
     # 纵向控制 thorro_ and brake_
     lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
+    # 横向控制 steer_
     latitudeControlpos(MyCar.positionnow, Controller.latPid)
     ADCPlatform.control(Controller.speedPid.thorro_, Controller.latPid.steer_, Controller.speedPid.brake_, 1)
 
@@ -77,11 +80,17 @@ def overtakeJob(Controller, MyCar, direction):
 
     if (MyCar.speed < 41 and not MyCar.changing):
         if (direction == 'left'):
-            MyCar.midlane = min(7 , 7 + MyCar.midlane)
+            MyCar.midlane = min(7 , 7 + MyCar.midlane) # 最左侧不可左变道
         elif (direction == 'right'):
             MyCar.midlane = max(-7 , -7 + MyCar.midlane)
         Controller.latPid.setSetpoint(MyCar.midlane)
-        MyCar.changing = True
+        MyCar.changing = True # 更新中线 进入超车
+
+    # overtake --> follow
+    if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.1):
+        MyCar.cardecision = 'follow'
+
+    # 横向控制 steer_
     latitudeControlpos(MyCar.positionnow, Controller.latPid)
     ADCPlatform.control(Controller.speedPid.thorro_, Controller.latPid.steer_, Controller.speedPid.brake_, 1)
 
