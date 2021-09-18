@@ -15,9 +15,9 @@ class CarState(object):
 
 class ControlData(object):
     def __init__(self):
-        self.lat_kp = 2.20
+        self.lat_kp = 1.20
         self.lat_ki = 0.0
-        self.lat_kd = 6.0
+        self.lat_kd = 6.5
         self.latPid = pid.PID(self.lat_kp, self.lat_ki, self.lat_kd)
 
         self.targetSpeedInit = 60.0 # 想要到达的速度

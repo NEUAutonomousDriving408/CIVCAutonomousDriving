@@ -44,12 +44,14 @@ if __name__ == '__main__':
         这里加入感知图片返回数据主要改planning
         """
         epoch = 1
+        direction = 'mid'
         while True:
             # decision = planning.run(data, PerceptionArgs)
-            control.run(Controller, MyCar, SensorId)
+            control.run(Controller, MyCar, SensorId, direction)
 
             if (MyCar.speed > 58):
                 MyCar.cardecision = 'changelane'
+                direction = 'right'
 
             epoch += 1
             if (epoch == 1000):
