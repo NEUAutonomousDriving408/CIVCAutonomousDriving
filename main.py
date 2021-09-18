@@ -21,7 +21,7 @@ if __name__ == '__main__':
     # 设置登录密码
     password = 'ps123456'
     # whether initialize perception model
-    perceptionFlag = False
+    perceptionFlag = True
 
     result = ADCPlatform.start(serverUrl, username, password)
 
@@ -34,11 +34,11 @@ if __name__ == '__main__':
         SensorId, Controller, PerceptionArgs, MyCar = initial.init(perceptionFlag)
 
         # multi thread
-        # thread1 = threading.Thread(target=sensor.run, args=(SensorId, data, ))
-        # thread2 = threading.Thread(target=perception.run, args=(perceptionFlag, data, PerceptionArgs, ))
+        thread1 = threading.Thread(target=sensor.run, args=(SensorId, data, ))
+        thread2 = threading.Thread(target=perception.run, args=(perceptionFlag, data, PerceptionArgs, ))
 
-        # thread1.start()
-        # thread2.start()
+        thread1.start()
+        thread2.start()
 
         """
         这里加入感知图片返回数据主要改planning
@@ -56,8 +56,8 @@ if __name__ == '__main__':
             epoch += 1
             if (epoch == 1000):
                 epoch = 1
-        # thread1.join()
-        # thread2.join()
+        thread1.join()
+        thread2.join()
 
         ADCPlatform.stop()
 
