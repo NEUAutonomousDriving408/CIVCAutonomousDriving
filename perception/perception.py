@@ -1,15 +1,15 @@
 import ADCPlatform
 import time
-# from PIL import Image
-# import numpy
-# import torch
+from PIL import Image
+import numpy
+import torch
 
 import perception.DrivingDetection as detection
 
 import sys
 sys.path.append("../")
 import control.pid as pid
-# from yolox.data.datasets import COCO_CLASSES
+from yolox.data.datasets import COCO_CLASSES
 
 
 def convert_image_to_numpy_ndarray(imageframe_byte):
