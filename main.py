@@ -44,20 +44,16 @@ if __name__ == '__main__':
         这里加入感知图片返回数据主要改planning
         """
         epoch = 1
-        decisionSpeed = 60 # 快速起步
-        changelane = False
+        decision = 'speedup' # planning 修改decision 默认初始化为speedup
         while True:
-            # decision = planning.run(data, PerceptionArgs, changelane)
-
-            control.run(Controller, decisionSpeed, changelane)
-            # if(stop):
-            #     break
+            # decision = planning.run(data, PerceptionArgs)
+            control.run(Controller, 40, decision)
 
             epoch += 1
             if (epoch == 1000):
                 epoch = 1
-        thread1.join()
-        thread2.join()
+        # thread1.join()
+        # thread2.join()
 
         ADCPlatform.stop()
 

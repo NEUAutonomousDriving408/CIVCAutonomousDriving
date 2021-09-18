@@ -67,13 +67,29 @@ def lontitudeControlSpeed(speed, lonPid):
 #         lonPid.brake_= ((radarPidThread_2 - lonPid.output) / radarPidThread_2) * 0.4 #
 
 
+def changelanefun():
+
+    pass
+
+
 ''' xld - speed control
 控制发送频率 100hz
 '''
-def run(Controller, decisionSpeed):
+changLaneState = False
+def run(Controller, aimSpeed, decision):
+
+    # 如果decision被planning进行了修改
+    if (decision == 'speedup'):
+        aimSpeed = 60
+    elif (decision == 'keeplane'):
+        aimSpeed = 40
+    elif (decision == 'changelane'):
+        aimSpeed = 40
+        changLaneState = True
+        changelanefun()
 
     # 调整速度
-    Controller.speedPid.setSetpoint(decisionSpeed)
+    Controller.speedPid.setSetpoint(aimSpeed)
 
     # 获取车辆控制数据包
     control_data_package = ADCPlatform.get_control_data()
@@ -91,6 +107,3 @@ def run(Controller, decisionSpeed):
     # 纵向速度控制 speed pid update
     lontitudeControlSpeed(carSpeed, Controller.speedPid)
     ADCPlatform.control(Controller.speedPid.thorro_, 0, Controller.speedPid.brake_, 1)
-
-    # 休眠30毫秒
-    # time.sleep(0.003)
