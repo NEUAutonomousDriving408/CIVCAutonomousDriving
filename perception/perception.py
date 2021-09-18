@@ -11,12 +11,22 @@ sys.path.append("../")
 import control.pid as pid
 from yolox.data.datasets import COCO_CLASSES
 
+class DistanceData:
+    def __init__(self):
+        self.distance = float('inf')
+    
+    def get_distance(self):
+        return self.distance
+    
+    def set_distance(self, dis):
+        self.distance = dis
+
 
 def convert_image_to_numpy_ndarray(imageframe_byte):
    return numpy.array(Image.open(imageframe_byte))
 
 
-def run(perceptionFlag, data, PerceptionArgs, distance):
+def run(perceptionFlag, data, PerceptionArgs, distanceData):
     # data : a dict of 4 elements
     # including "control", "landLine", "radar" and "image"
     # PerceptionArgs : a dict of 2 elements
@@ -24,12 +34,11 @@ def run(perceptionFlag, data, PerceptionArgs, distance):
     if not perceptionFlag:
         return None
 
-
     time.sleep(0.5)
     while True:
         img = convert_image_to_numpy_ndarray(data["image"].byte)
         result = detection.driving_runtime(PerceptionArgs["predictor"], None, img, PerceptionArgs["args"])
-        distance = {"data": result.item()}
+        distanceData.set_distance(result.item())
         # print("distance : ", distance.item())
 
 

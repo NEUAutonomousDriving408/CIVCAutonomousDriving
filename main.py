@@ -3,6 +3,7 @@ import control
 import initial.initial as initial
 import sensor.loadsensor as sensor
 import perception.perception as perception
+from perception.perception import DistanceData
 import threading
 
 data = dict()
@@ -11,7 +12,8 @@ data["landLine"] = None
 data["radar"] = None
 data["image"] = None
 result = None
-distance = {"data": float('inf')}
+# distance = {"data": float('inf')}
+distanceData = DistanceData()
 
 if __name__ == '__main__':
     # 开启平台SDK
@@ -36,7 +38,7 @@ if __name__ == '__main__':
 
         # multi thread
         thread1 = threading.Thread(target=sensor.run, args=(SensorId, data, ))
-        thread2 = threading.Thread(target=perception.run, args=(perceptionFlag, data, PerceptionArgs, distance, ))
+        thread2 = threading.Thread(target=perception.run, args=(perceptionFlag, data, PerceptionArgs, distanceData, ))
 
         thread1.start()
         thread2.start()
@@ -50,8 +52,8 @@ if __name__ == '__main__':
         epoch = 1
         direction = 'mid'
         while True:
-            current_distance = distance["data"]
-            print("current_distance: ", current_distance)
+            # current_distance = distance["data"]
+            print("current_distance: ", distanceData.get_distance())
 
 
             # decision = planning.run(data, PerceptionArgs)
