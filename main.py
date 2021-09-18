@@ -50,7 +50,11 @@ if __name__ == '__main__':
             control.run(Controller, MyCar, SensorId, direction)
 
             if (MyCar.speed > 58):
-                MyCar.cardecision = 'changelane'
+                MyCar.cardecision = 'follow'
+            if (MyCar.cardecision == 'follow'
+                    and not MyCar.changing
+                    and MyCar.speed < 41):
+                MyCar.cardecision = 'overtake'
                 direction = 'right'
 
             epoch += 1
