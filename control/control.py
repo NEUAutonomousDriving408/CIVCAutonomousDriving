@@ -74,13 +74,13 @@ def changelanefun(side, MyCar):
     if (MyCar.speed - 40 > 2): # 稍等一会儿
         return 0
 
-    if (MyCar.cao < 9.5 and MyCar.changelanestage == 0):
+    if (abs(MyCar.cao) < 10.5 and MyCar.changelanestage == 0):
         MyCar.changelanestage = 1
-    elif (MyCar.cao > 9.5 and MyCar.changelanestage == 1):
+    elif (abs(MyCar.cao) > 10.5 and MyCar.changelanestage == 1):
         MyCar.changelanestage = 2
-    elif (MyCar.cao < 3 and MyCar.changelanestage == 2):
+    elif (abs(MyCar.cao) < 3 and MyCar.changelanestage == 2):
         MyCar.changelanestage = 3
-    elif (abs(MyCar.cao) < 0.1 and MyCar.changelanestage == 3):
+    elif (abs(MyCar.cao) < 0.01 and MyCar.changelanestage == 3):
         MyCar.cardecision = 'keeplane'
         MyCar.changelanestage = 0
 
@@ -114,11 +114,12 @@ def run(Controller, MyCar):
     control_data_package = ADCPlatform.get_control_data()
     if not control_data_package:
         print("任务结束")
+
     MyCar.speed = control_data_package.json['FS']
     MyCar.cao = control_data_package.json['CAO']
 
     if (MyCar.cardecision == 'changelane'):
-        steerout = changelanefun('right', MyCar)
+        steerout = changelanefun('left', MyCar)
         lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
         ADCPlatform.control(Controller.speedPid.thorro_, steerout, Controller.speedPid.brake_, 1)
         return
