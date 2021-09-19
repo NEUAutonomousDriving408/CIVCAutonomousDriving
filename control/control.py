@@ -73,15 +73,15 @@ def followJob(Controller, MyCar):
     latitudeControlpos(MyCar.positionnow, Controller.latPid)
     ADCPlatform.control(Controller.speedPid.thorro_, Controller.latPid.steer_, Controller.speedPid.brake_, 1)
 
-def overtakeJob(Controller, MyCar, direction):
+def overtakeJob(Controller, MyCar):
     Controller.speedPid.setSetpoint(40)
     # 纵向控制 thorro_ and brake_
     lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
 
     if (MyCar.speed < 41 and not MyCar.changing):
-        if (direction == 'left'):
+        if (MyCar.direction == 'left'):
             MyCar.midlane = min(7 , 7 + MyCar.midlane) # 最左侧不可左变道
-        elif (direction == 'right'):
+        elif (MyCar.direction == 'right'):
             MyCar.midlane = max(-7 , -7 + MyCar.midlane)
         Controller.latPid.setSetpoint(MyCar.midlane)
         MyCar.changing = True # 更新中线 进入超车
@@ -89,6 +89,7 @@ def overtakeJob(Controller, MyCar, direction):
     # overtake --> follow
     if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.1):
         MyCar.cardecision = 'follow'
+        MyCar.direction = 'mid'
 
     # 横向控制 steer_
     latitudeControlpos(MyCar.positionnow, Controller.latPid)
@@ -96,7 +97,7 @@ def overtakeJob(Controller, MyCar, direction):
 
 ''' xld - speed control
 '''
-def run(Controller, MyCar, SensorID, direction):
+def run(Controller, MyCar, SensorID):
 
     # 获取车辆控制数据包
     control_data_package = ADCPlatform.get_control_data()
@@ -114,7 +115,7 @@ def run(Controller, MyCar, SensorID, direction):
     MyCar.cao = control_data_package.json['CAO']
 
     if (MyCar.cardecision == 'overtake'):
-        overtakeJob(Controller, MyCar, direction)
+        overtakeJob(Controller, MyCar)
     elif (MyCar.cardecision == 'speedup'):
         speedupJob(Controller, MyCar)
     elif (MyCar.cardecision == 'follow'):

@@ -1,5 +1,6 @@
 import ADCPlatform
 import control
+import planning.decision as planning
 import initial.initial as initial
 import sensor.loadsensor as sensor
 import perception.perception as perception
@@ -50,22 +51,19 @@ if __name__ == '__main__':
         current_distance = float('inf')
 
         epoch = 1
-        direction = 'mid'
         while True:
-            # current_distance = distance["data"]
             print("current_distance: ", distanceData.get_distance())
 
+            planning.run(distanceData.get_distance(), MyCar)
+            control.run(Controller, MyCar, SensorId)
 
-            # decision = planning.run(data, PerceptionArgs)
-            control.run(Controller, MyCar, SensorId, direction)
-
-            if (MyCar.speed > 58):
-                MyCar.cardecision = 'follow'
-            if (MyCar.cardecision == 'follow'
-                    and not MyCar.changing
-                    and MyCar.speed < 41):
-                MyCar.cardecision = 'overtake'
-                direction = 'right'
+            # if (MyCar.speed > 58):
+            #     MyCar.cardecision = 'follow'
+            # if (MyCar.cardecision == 'follow'
+            #         and not MyCar.changing
+            #         and MyCar.speed < 41):
+            #     MyCar.cardecision = 'overtake'
+            #     direction = 'right'
 
             epoch += 1
             if (epoch == 1000):
