@@ -267,7 +267,7 @@ def driving_runtime(predictor, vis_folder, image, args):
             if outputs[0][i][4] * outputs[0][i][5] > predictor.confthre and (outputs[0][i][6] == 2 or outputs[0][i][6] == 7):
                 centroidX = outputs[0][i][0] + (outputs[0][i][2] - outputs[0][i][0]) / 2
                 bottomY = outputs[0][i][3]
-                if centroidX > 312 and centroidX < 328 and bottomY < 350:
+                if centroidX > 305 and centroidX < 335 and bottomY < 350:
                     distance = distance_estimation(outputs[0][i][0].cpu().clone(), outputs[0][i][1].cpu().clone(), outputs[0][i][2].cpu().clone(), outputs[0][i][3].cpu().clone(), args)
                     # print(i, distance)
     result_image = predictor.visual(outputs[0], img_info, predictor.confthre)

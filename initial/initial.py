@@ -13,7 +13,7 @@ class CarState(object):
         self.midlane = 0            # 7 0 -7 latpid 参考 target
         self.positionnow = 0        # 两车道线A1求和
         self.changing = False       # 处于超车状态时为True
-        self.saftydistance = 10
+        self.saftydistance = 25
         self.direction = 'mid'
 
 class ControlData(object):

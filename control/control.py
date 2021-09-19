@@ -58,7 +58,7 @@ def lontitudeControlSpeed(speed, lonPid):
 
 
 def speedupJob(Controller, MyCar):
-    Controller.speedPid.setSetpoint(60)
+    Controller.speedPid.setSetpoint(50)
     # 纵向控制 thorro_ and brake_
     lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
     # 横向控制 steer_
@@ -90,6 +90,7 @@ def overtakeJob(Controller, MyCar):
     if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.1):
         MyCar.cardecision = 'follow'
         MyCar.direction = 'mid'
+        MyCar.changing = False
 
     # 横向控制 steer_
     latitudeControlpos(MyCar.positionnow, Controller.latPid)
@@ -105,7 +106,7 @@ def run(Controller, MyCar, SensorID):
     landLine_package = ADCPlatform.get_data(SensorID["landLine"])
     try:
         MyCar.positionnow = landLine_package.json[2]['A1'] + landLine_package.json[1]['A1']
-    except AttributeError:
+    except AttributeError or IndexError:
         pass
 
     if not control_data_package:

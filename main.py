@@ -52,9 +52,14 @@ if __name__ == '__main__':
 
         epoch = 1
         while True:
-            print("current_distance: ", distanceData.get_distance())
+            if distanceData.get_distance() != float('inf'):
+                previous_distance =  distanceData.get_distance()
+            else:
+                current_distance = previous_distance
+            print("current_distance: ", current_distance)
+            print("car decison : ", MyCar.cardecision)
 
-            planning.run(distanceData.get_distance(), MyCar)
+            planning.run(current_distance, MyCar)
             control.run(Controller, MyCar, SensorId)
 
             # if (MyCar.speed > 58):
