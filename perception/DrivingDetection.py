@@ -47,7 +47,7 @@ def make_parser(left_num, right_num):
     parser.add_argument("-lb", "--leftbound", type=int, default=left_num)
     parser.add_argument("-rb", "--rightbound", type=int, default=right_num)
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
-    parser.add_argument("-n", "--name", type=str, default="yolox-m", help="model name")
+    parser.add_argument("-n", "--name", type=str, default="yolox-l", help="model name")
 
     parser.add_argument(
         "--path", default="./assets/dog.jpg", help="path to images or video"
@@ -64,11 +64,11 @@ def make_parser(left_num, right_num):
     parser.add_argument(
         "-f",
         "--exp_file",
-        default="./YOLOX/exps/default/yolox_m.py",
+        default="./YOLOX/exps/default/yolox_l.py",
         type=str,
         help="pls input your experiment description file",
     )
-    parser.add_argument("-c", "--ckpt", default=".//YOLOX/pretrainedmodel/yolox_m.pth", type=str, help="ckpt for eval")
+    parser.add_argument("-c", "--ckpt", default=".//YOLOX/pretrainedmodel/yolox_l.pth", type=str, help="ckpt for eval")
     parser.add_argument(
         "--device",
         default="gpu",
@@ -262,17 +262,27 @@ def imageflow_demo(predictor, vis_folder, current_time, args):
             break
 
 def driving_runtime(predictor, vis_folder, image, args, MyCar):
+    # detection model inference 
     outputs, img_info = predictor.inference(image)
 
+    # initilization of left, mid and right detection distance 
     distance_left = torch.tensor(float('inf'))
     distance_mid = torch.tensor(float('inf'))
     distance_right = torch.tensor(float('inf'))
-
+    
+    """
+    When detecting the bounding boxes, enter this branch.
+    Judging the left, mid and right bounding boxes
+    in order to estimate the distance between autonomous driving vehicle and front vehicles.
+    """
     if outputs[0] is not None:
+        # initialize the index of left and right boundig boxes
+        # if index number is not -1, there are vehicles in front of the autonomous deving vehicle.
         left_index = -1      
         left_position = -1   # 0 - 1
         right_index = -1
         right_position = 641 # image width pixel is 640 
+
         # first traversal 
         for i in range(outputs[0].shape[0]): 
             centroidX = outputs[0][i][0] + (outputs[0][i][2] - outputs[0][i][0]) / 2
