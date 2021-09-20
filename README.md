@@ -2,7 +2,8 @@
 
 #### 介绍
 Python Implementation of Autunomous Driving Simulation
-![overtake](https://gitee.com/icvrc2021-neu/icvrcautonomous-driving/images/overtake.gif)
+
+![overtake](images/overtake.gif)
 
 #### 软件架构
 包含感知、决策、规划、控制相关部分
