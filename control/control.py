@@ -100,6 +100,7 @@ def overtakeJob(Controller, MyCar):
         MyCar.changing = True # 更新中线 进入超车
 
     # overtake --> follow
+    print("minus : ", MyCar.midlane - MyCar.positionnow)
     if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.2):
         MyCar.cardecision = 'follow'
         MyCar.direction = 'mid'

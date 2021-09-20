@@ -283,27 +283,44 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
         right_index = -1
         right_position = 641 # image width pixel is 640 
 
+        leftlist1 = []
+        leftlist2 = []
+        rightlist1 = []
+        rightlist2 = []
+
         # first traversal 
         for i in range(outputs[0].shape[0]): 
             centroidX = outputs[0][i][0] + (outputs[0][i][2] - outputs[0][i][0]) / 2
             bottomY = outputs[0][i][3]
             if outputs[0][i][4] * outputs[0][i][5] > predictor.confthre and \
                 (outputs[0][i][6] == 2 or outputs[0][i][6] == 7 or outputs[0][i][6] == 5 or outputs[0][i][6] == 6):
-                if (MyCar.midlane == 0 or MyCar.midlane == 7) and \
+                if (MyCar.midlane == 0 or MyCar.midlane == -7) and \
                     MyCar.changing == False and \
                     centroidX <= args.leftbound: 
-                    if centroidX > left_position:
-                        left_index = i 
-                    if outputs[0][i][2] - outputs[0][i][0] > 90:
-                        left_index = i
+                    left_index = i 
+                    leftlist1.append(i)
+                    leftlist2.append( (outputs[0][i][2] - outputs[0][i][0]) * (outputs[0][i][3] - outputs[0][i][1]) )
+                    # if outputs[0][i][2] - outputs[0][i][0] > 90:
+                    #     left_index = i
 
-            if (MyCar.midlane == 0 or MyCar.midlane == -7) and \
+            if (MyCar.midlane == 0 or MyCar.midlane == 7) and \
                     MyCar.changing == False and \
                     centroidX >= args.rightbound:
-                    if centroidX < right_position:
-                        right_index = i
-                    if outputs[0][i][2] - outputs[0][i][0] > 90:
-                        right_index = i
+                    rightlist1.append(i)
+                    rightlist2.append( (outputs[0][i][2] - outputs[0][i][0]) * (outputs[0][i][3] - outputs[0][i][1]) )
+                    # if centroidX < right_position:
+                    #     right_index = i
+                    # if outputs[0][i][2] - outputs[0][i][0] > 90:
+                    #     right_index = i
+        if leftlist2:
+            maxvalue_left = max(leftlist2)
+            max_left_index = leftlist2.index(maxvalue_left)
+            left_index = leftlist1[max_left_index]
+        if rightlist2:
+            maxvalue_right = max(rightlist2)
+            max_right_index = rightlist2.index(maxvalue_right)
+            right_index = rightlist1[max_right_index]
+
         
         if left_index != -1:
             distance_left = distance_estimation(outputs[0][left_index][0].cpu().clone(), 
