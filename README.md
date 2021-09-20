@@ -2,9 +2,11 @@
 
 #### 介绍
 Python Implementation of Autunomous Driving Simulation
+![overtake](https://gitee.com/icvrc2021-neu/icvrcautonomous-driving/images/overtake.gif)
 
 #### 软件架构
 包含感知、决策、规划、控制相关部分
+
 
 #### 安装教程
 git clone git@gitee.com:icvrc2021-neu/icvrcautonomous-driving.git 到本地，可进行开发.
@@ -25,4 +27,4 @@ git push --set-upstream origin dev
 (1) git checkout xld-control-changelane 删除分支前先切换到其他分支 
 (2) git branch -D xld-control-pid
 
-3.删除远程分支 git push origin --delete xld-control-pid END
+3.删除远程分支 git push origin --delete xld-control-pid
