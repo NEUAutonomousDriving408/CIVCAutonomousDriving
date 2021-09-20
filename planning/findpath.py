@@ -1,0 +1,14 @@
+def findpath(distance, MyCar):
+
+    # 当前所在车道
+    whichlanenow = MyCar.midlane
+
+    if whichlanenow == -7:
+        MyCar.direction = 'right'
+    elif whichlanenow == 7:
+        MyCar.direction = 'left'
+    else:
+        MyCar.direction = 'left' if distance[0] > distance[2] else 'right'
+
+
+

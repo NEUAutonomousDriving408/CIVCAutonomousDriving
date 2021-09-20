@@ -1,15 +1,10 @@
-# import findpath
+import findpath as findpath
 
 '''xld - planning
 stage 1 : speedup 加速到与前车保持10米距离 60km/h  45km/h
 stage 2 : keeplane 保持稳定40km/h车速
 stage 3 : changelane 变道
 '''
-
-
-def findTarget(data):
-    distance = 50
-    return distance
 
 def run(distance, MyCar):
 
@@ -25,14 +20,16 @@ def run(distance, MyCar):
             and distance < MyCar.saftydistance
             and not MyCar.changing # 保证超车只判断一次即可
             and MyCar.speed < 44): # follow 已将车速降下来
-        MyCar.cardecision = 'overtake'
-        # findpath() # left or right
-        if MyCar.midlane == 0:
-            MyCar.direction = 'right'
-        elif  MyCar.midlane == -7:
-            MyCar.direction = 'left'
+
+        findpath(distance, MyCar) # left or right
 
         # 超车完成后会自动回复到follow状态
+        MyCar.cardecision = 'overtake'
+
+        # if MyCar.midlane == 0:
+        #     MyCar.direction = 'right'
+        # elif  MyCar.midlane == -7:
+        #     MyCar.direction = 'left'
         return
 
     # stage 3

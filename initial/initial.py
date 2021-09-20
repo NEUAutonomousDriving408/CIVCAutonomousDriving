@@ -9,13 +9,13 @@ class CarState(object):
     def __init__(self):
         self.speed = 0              # 车辆当前速度
         self.cao = 0                # 车辆当前姿态
+        self.yr = 0                 # 车辆当前角速度
         self.cardecision = 'speedup'# planning计算得到决策
         self.midlane = 0            # 7 0 -7 latpid 参考 target
         self.positionnow = 0        # 两车道线A1求和
         self.changing = False       # 处于超车状态时为True
         self.saftydistance = 25     # 与前车的安全距离
-        self.direction = 'mid'
-        self.yr = 0                 # 车辆当前姿态
+        self.direction = 'mid'      # 当前行驶方向
 
 class ControlData(object):
     def __init__(self):
@@ -37,7 +37,6 @@ class ControlData(object):
         self.speedPidThread_1 = 10
         self.speedPidThread_2 = 2
 
-    
     def initPID(self):
         self.speedPid.clear() # lon
         self.latPid.clear()   # lat
