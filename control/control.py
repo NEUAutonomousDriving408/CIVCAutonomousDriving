@@ -33,8 +33,8 @@ steer_ - pid计算方向盘输出
 def latitudeControlpos(positionnow, latPid):
     latPid.update(positionnow)
     latPid.steer_ = latPid.output * -1
-    if abs(latPid.steer_) > 70:
-        latPid.steer_ = 70 if latPid.steer_ > 0 else -70
+    # if abs(latPid.steer_) > 70:
+    #     latPid.steer_ = 70 if latPid.steer_ > 0 else -70
 
 ''' xld - speed pid control
 加速时能够较快达到设定目标 
@@ -87,11 +87,11 @@ def followJob(Controller, MyCar):
     ADCPlatform.control(Controller.speedPid.thorro_, Controller.latPid.steer_, Controller.speedPid.brake_, 1)
 
 def overtakeJob(Controller, MyCar):
-    Controller.speedPid.setSetpoint(40)
+    Controller.speedPid.setSetpoint(41)
     # 纵向控制 thorro_ and brake_
     lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
 
-    if (MyCar.speed < 41 and not MyCar.changing):
+    if (not MyCar.changing):
         if (MyCar.direction == 'left'):
             MyCar.midlane = min(7 , 7 + MyCar.midlane) # 最左侧不可左变道
         elif (MyCar.direction == 'right'):
@@ -112,7 +112,7 @@ def overtakeJob(Controller, MyCar):
     # print('latsteer is ', Controller.latPid.steer_)
     latitudeControlpos(MyCar.positionnow, Controller.latPid)
     ADCPlatform.control(Controller.speedPid.thorro_,
-                        Controller.latPid.steer_ - Controller.yrPid.yrsteer_,
+                        Controller.latPid.steer_ ,#- Controller.yrPid.yrsteer_,
                         Controller.speedPid.brake_, 1)
 
 ''' xld - speed control
@@ -123,10 +123,23 @@ def run(Controller, MyCar, SensorID):
     control_data_package = ADCPlatform.get_control_data()
     # 获取数据包
     landLine_package = ADCPlatform.get_data(SensorID["landLine"])
-    try:
-        MyCar.positionnow = landLine_package.json[2]['A1'] + landLine_package.json[1]['A1']
-    except AttributeError or IndexError:
+
+    if landLine_package:
+        if landLine_package.json:
+            if landLine_package.json[1] and landLine_package.json[2]:
+                MyCar.positionnow = landLine_package.json[2]['A1'] + landLine_package.json[1]['A1']
+            else:
+                pass
+        else:
+            pass
+    else:
         pass
+    # try:
+    #     MyCar.positionnow = landLine_package.json[2]['A1'] + landLine_package.json[1]['A1']
+    # except AttributeError or IndexError:
+    #     pass
+    # finally:
+    #     pass
 
     if not control_data_package:
         print("任务结束")
@@ -142,4 +155,4 @@ def run(Controller, MyCar, SensorID):
     elif (MyCar.cardecision == 'follow'):
         followJob(Controller, MyCar)
 
-    # print(MyCar.cardecision, MyCar.midlane)
+    print(MyCar.cardecision, MyCar.midlane, MyCar.direction)

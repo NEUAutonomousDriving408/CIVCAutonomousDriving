@@ -5,6 +5,7 @@
 import sys
 sys.path.append("../")
 import ADCPlatform
+from initial.initial import CarState
 import argparse
 import os
 import time
@@ -258,23 +259,78 @@ def imageflow_demo(predictor, vis_folder, current_time, args):
         else:
             break
 
-def driving_runtime(predictor, vis_folder, image, args):
+def driving_runtime(predictor, vis_folder, image, args, MyCar):
     outputs, img_info = predictor.inference(image)
-    distance = torch.tensor(float('inf'))
+
+    distance_left = torch.tensor(float('inf'))
+    distance_mid = torch.tensor(float('inf'))
+    distance_right = torch.tensor(float('inf'))
+
     if outputs[0] is not None:
+        left_index = -1      
+        left_position = -1   # 0 - 1
+        right_index = -1
+        right_position = 641 # image width pixel is 640 
+        # first traversal 
+        for i in range(outputs[0].shape[0]): 
+            centroidX = outputs[0][i][0] + (outputs[0][i][2] - outputs[0][i][0]) / 2
+            bottomY = outputs[0][i][3]
+            if outputs[0][i][4] * outputs[0][i][5] > predictor.confthre and \
+                (outputs[0][i][6] == 2 or outputs[0][i][6] == 7 or outputs[0][i][6] == 5 or outputs[0][i][6] == 6):
+                if (MyCar.midlane == 0 or MyCar.midlane == 7) and \
+                    MyCar.changing == False and \
+                    centroidX <= 305 and bottomY < 350: 
+                    if centroidX > left_position:
+                        left_index = i 
+
+            if (MyCar.midlane == 0 or MyCar.midlane == -7) and \
+                    MyCar.changing == False and \
+                    centroidX >= 335 and bottomY < 350:
+                    if centroidX < right_position:
+                        right_index = i
+        
+        if left_index != -1:
+            distance_left = distance_estimation(outputs[0][left_index][0].cpu().clone(), 
+                                                        outputs[0][left_index][1].cpu().clone(), 
+                                                        outputs[0][left_index][2].cpu().clone(), 
+                                                        outputs[0][left_index][3].cpu().clone(), 
+                                                        args)
+        if  right_index != -1:
+            distance_right = distance_estimation(outputs[0][right_index][0].cpu().clone(), 
+                                                        outputs[0][right_index][1].cpu().clone(), 
+                                                        outputs[0][right_index][2].cpu().clone(), 
+                                                        outputs[0][right_index][3].cpu().clone(), 
+                                                        args)
+        
+        # second traversal
         for i in range(outputs[0].shape[0]):
             # class name is car or truck, and score greater than threshold
-            if outputs[0][i][4] * outputs[0][i][5] > predictor.confthre and (outputs[0][i][6] == 2 or outputs[0][i][6] == 7):
+            if outputs[0][i][4] * outputs[0][i][5] > predictor.confthre and \
+                (outputs[0][i][6] == 2 or outputs[0][i][6] == 7 or outputs[0][i][6] == 5 or outputs[0][i][6] == 6):
+
                 centroidX = outputs[0][i][0] + (outputs[0][i][2] - outputs[0][i][0]) / 2
                 bottomY = outputs[0][i][3]
+
                 if centroidX > 305 and centroidX < 335 and bottomY < 350:
-                    distance = distance_estimation(outputs[0][i][0].cpu().clone(), outputs[0][i][1].cpu().clone(), outputs[0][i][2].cpu().clone(), outputs[0][i][3].cpu().clone(), args)
+                    distance_mid = distance_estimation(outputs[0][i][0].cpu().clone(), 
+                                                        outputs[0][i][1].cpu().clone(), 
+                                                        outputs[0][i][2].cpu().clone(), 
+                                                        outputs[0][i][3].cpu().clone(), 
+                                                        args)
+                if outputs[0][i][2] - outputs[0][i][0] > 260 and bottomY < 390:
+                    distance_mid = distance_estimation(outputs[0][i][0].cpu().clone(), 
+                                                        outputs[0][i][1].cpu().clone(), 
+                                                        outputs[0][i][2].cpu().clone(), 
+                                                        outputs[0][i][3].cpu().clone(), 
+                                                        args)
                     # print(i, distance)
+                                        
     result_image = predictor.visual(outputs[0], img_info, predictor.confthre)
     img = cv2.cvtColor(result_image, cv2.COLOR_RGB2BGR)
     cv2.imshow("AfterProcessing", img)
     cv2.waitKey(1)
-    return distance
+
+    return distance_left,  distance_mid, distance_right
 
 
 def main(exp, args):

@@ -1,4 +1,5 @@
-import findpath as findpath
+from planning.findpath import findpath
+from perception.perception import DistanceData
 
 '''xld - planning
 stage 1 : speedup 加速到与前车保持10米距离 60km/h  45km/h
@@ -6,18 +7,20 @@ stage 2 : keeplane 保持稳定40km/h车速
 stage 3 : changelane 变道
 '''
 
-def run(distance, MyCar):
+def run(distanceData, MyCar):
+    distance_left, distance_mid, distance_right = distanceData.get_distance() 
+    distance = [distance_left, distance_mid, distance_right]
 
     # stage 1
     # 读取sensor 正前方车辆距离数据
-    if(distance < MyCar.saftydistance and MyCar.cardecision == 'speedup'): #小于10米开始减速
+    if(distance_mid < MyCar.saftydistance and MyCar.cardecision == 'speedup'): #小于10米开始减速
         MyCar.cardecision = 'follow' # stage0 -> stage1 更改状态之后distance < 10，等到车速降到400即可进行overtake
         return
 
     # stage 2
     # find target lane
     if(MyCar.cardecision == 'follow'
-            and distance < MyCar.saftydistance
+            and distance_mid < MyCar.saftydistance
             and not MyCar.changing # 保证超车只判断一次即可
             and MyCar.speed < 44): # follow 已将车速降下来
 
@@ -35,7 +38,7 @@ def run(distance, MyCar):
     # stage 3
     # speedup and get close to the front car
     if (MyCar.cardecision == 'follow'
-            and distance > MyCar.saftydistance):
+            and distance_mid > MyCar.saftydistance):
         MyCar.cardecision = 'speedup'
         return
 

@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
         # multi thread
         thread1 = threading.Thread(target=sensor.run, args=(SensorId, data, ))
-        thread2 = threading.Thread(target=perception.run, args=(perceptionFlag, data, PerceptionArgs, distanceData, ))
+        thread2 = threading.Thread(target=perception.run, args=(perceptionFlag, data, PerceptionArgs, distanceData, MyCar, ))
 
         thread1.start()
         thread2.start()
@@ -52,14 +52,14 @@ if __name__ == '__main__':
 
         epoch = 1
         while True:
-            if distanceData.get_distance() != float('inf'):
-                previous_distance =  distanceData.get_distance()
+            if distanceData.get_distance()[1] != float('inf'):
+                _, previous_distance, _ =  distanceData.get_distance()
             else:
                 current_distance = previous_distance
             print("current_distance: ", current_distance)
             print("car decison : ", MyCar.cardecision)
 
-            planning.run(current_distance, MyCar)
+            planning.run(distanceData, MyCar)
             control.run(Controller, MyCar, SensorId)
 
             # if (MyCar.speed > 58):
