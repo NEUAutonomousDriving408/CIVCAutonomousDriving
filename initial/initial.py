@@ -13,8 +13,8 @@ class CarState(object):
         self.midlane = 0            # 7 0 -7 latpid 参考 target
         self.positionnow = 0        # 两车道线A1求和
         self.changing = False       # 处于超车状态时为True
-        self.saftydistance = 25
-        self.direction = 'mid'
+        self.saftydistance = 25     # 与前车的安全距离
+        self.yr = 0                 # 车辆当前姿态
 
 class ControlData(object):
     def __init__(self):
@@ -22,6 +22,11 @@ class ControlData(object):
         self.lat_ki = 0.08
         self.lat_kd = 6.2
         self.latPid = pid.PID(self.lat_kp, self.lat_ki, self.lat_kd)
+
+        self.yr_kp = 1.0
+        self.yr_ki = 0.10
+        self.yr_kd = 0
+        self.yrPid = pid.PID(self.yr_kp, self.yr_ki, self.yr_kd)
 
         self.targetSpeedInit = 60.0 # 想要到达的速度
         self.speed_kp = 1.20
@@ -33,10 +38,12 @@ class ControlData(object):
 
     
     def initPID(self):
-        self.speedPid.clear()
-        self.latPid.clear()
-        self.latPid.setSetpoint(0)             # lat aim 0
+        self.speedPid.clear() # lon
+        self.latPid.clear()   # lat
+        self.yrPid.clear()   # lat
         self.speedPid.setSetpoint(self.targetSpeedInit)              # 保持40km/h
+        self.latPid.setSetpoint(0)             # lat aim 0
+        self.yrPid.setSetpoint(0)             # lat aim 0
 
 def init(perceptionFlag):
     # sensor initization

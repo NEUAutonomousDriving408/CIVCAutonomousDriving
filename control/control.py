@@ -14,6 +14,17 @@ import perception.DrivingDetection as detection
 speedPidThread_1 = 10 # 控制阈值1
 speedPidThread_2 = 2 # 控制阈值2
 
+
+
+''' xld - lat yr pid control
+定速巡航下进行变道
+steer_ - pid计算方向盘输出
+'''
+def latitudeyrControlpos(yr, yrPid):
+    yrPid.update(yr)
+    yrPid.yrsteer_ = yrPid.output * -1
+
+
 ''' xld - lat pid control
 定速巡航下进行变道
 positionnow = 车道多项式 A1之和
@@ -22,6 +33,8 @@ steer_ - pid计算方向盘输出
 def latitudeControlpos(positionnow, latPid):
     latPid.update(positionnow)
     latPid.steer_ = latPid.output * -1
+    if abs(latPid.steer_) > 70:
+        latPid.steer_ = 70 if latPid.steer_ > 0 else -70
 
 ''' xld - speed pid control
 加速时能够较快达到设定目标 
@@ -93,8 +106,14 @@ def overtakeJob(Controller, MyCar):
         MyCar.changing = False
 
     # 横向控制 steer_
+    # 加入角度速度约束
+    latitudeyrControlpos(MyCar.yr, Controller.yrPid)
+    # print('yr is', MyCar.yr, 'steeryr is', Controller.yrPid.yrsteer_) # overtake >15 , normal < 3
+    # print('latsteer is ', Controller.latPid.steer_)
     latitudeControlpos(MyCar.positionnow, Controller.latPid)
-    ADCPlatform.control(Controller.speedPid.thorro_, Controller.latPid.steer_, Controller.speedPid.brake_, 1)
+    ADCPlatform.control(Controller.speedPid.thorro_,
+                        Controller.latPid.steer_ - Controller.yrPid.yrsteer_,
+                        Controller.speedPid.brake_, 1)
 
 ''' xld - speed control
 '''
@@ -114,6 +133,7 @@ def run(Controller, MyCar, SensorID):
 
     MyCar.speed = control_data_package.json['FS']
     MyCar.cao = control_data_package.json['CAO']
+    MyCar.yr = control_data_package.json['YR']
 
     if (MyCar.cardecision == 'overtake'):
         overtakeJob(Controller, MyCar)
@@ -122,4 +142,4 @@ def run(Controller, MyCar, SensorID):
     elif (MyCar.cardecision == 'follow'):
         followJob(Controller, MyCar)
 
-    print(MyCar.cardecision, MyCar.midlane)
+    # print(MyCar.cardecision, MyCar.midlane)
