@@ -14,6 +14,7 @@ class CarState(object):
         self.positionnow = 0        # 两车道线A1求和
         self.changing = False       # 处于超车状态时为True
         self.saftydistance = 25     # 与前车的安全距离
+        self.direction = 'mid'
         self.yr = 0                 # 车辆当前姿态
 
 class ControlData(object):
