@@ -14,7 +14,7 @@ class CarState(object):
         self.midlane = 0            # 7 0 -7 latpid 参考 target
         self.positionnow = 0        # 两车道线A1求和
         self.changing = False       # 处于超车状态时为True
-        self.saftydistance = 15     # 与前车的安全距离
+        self.saftydistance = 12    # 与前车的安全距离
         self.direction = 'mid'      # 当前行驶方向
 
 class ControlData(object):
@@ -45,7 +45,7 @@ class ControlData(object):
         self.latPid.setSetpoint(0)             # lat aim 0
         self.yrPid.setSetpoint(0)             # lat aim 0
 
-def init(perceptionFlag):
+def init(perceptionFlag, image_left_bound, image_right_bound):
     # sensor initization
 
     # 毫米波真值传感器id
@@ -81,7 +81,7 @@ def init(perceptionFlag):
     predictor = None
     args = None
     if perceptionFlag:
-        args = detection.make_parser().parse_args()
+        args = detection.make_parser(image_left_bound, image_right_bound).parse_args()
         exp = detection.get_exp(args.exp_file, args.name)
         if args.conf is not None:
             exp.test_conf = args.conf

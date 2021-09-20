@@ -87,7 +87,7 @@ def followJob(Controller, MyCar):
     ADCPlatform.control(Controller.speedPid.thorro_, Controller.latPid.steer_, Controller.speedPid.brake_, 1)
 
 def overtakeJob(Controller, MyCar):
-    Controller.speedPid.setSetpoint(41)
+    Controller.speedPid.setSetpoint(40)
     # 纵向控制 thorro_ and brake_
     lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
 
@@ -100,7 +100,7 @@ def overtakeJob(Controller, MyCar):
         MyCar.changing = True # 更新中线 进入超车
 
     # overtake --> follow
-    if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.1):
+    if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.2):
         MyCar.cardecision = 'follow'
         MyCar.direction = 'mid'
         MyCar.changing = False
@@ -126,7 +126,7 @@ def run(Controller, MyCar, SensorID):
 
     if landLine_package:
         if landLine_package.json:
-            if landLine_package.json[1] and landLine_package.json[2]:
+            if len(landLine_package.json) >= 3 and landLine_package.json[1] and landLine_package.json[2]:
                 MyCar.positionnow = landLine_package.json[2]['A1'] + landLine_package.json[1]['A1']
             else:
                 pass

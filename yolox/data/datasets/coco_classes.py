@@ -5,12 +5,12 @@
 COCO_CLASSES = (
     "person",
     "bicycle",
-    "car",
+    "car", # 2
     "motorcycle",
     "airplane",
-    "bus",
-    "train",
-    "truck",
+    "bus", # 5
+    "train", # 6
+    "truck", # 7
     "boat",
     "traffic light",
     "fire hydrant",

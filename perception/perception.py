@@ -53,9 +53,16 @@ def run(perceptionFlag, data, PerceptionArgs, distanceData, MyCar):
                                                                         image=img, 
                                                                         args=PerceptionArgs["args"], 
                                                                         MyCar=MyCar)
-        distanceData.set_distance_left(result_left.item())
+        if MyCar.midlane == 7:
+            distanceData.set_distance_left(float('inf'))
+        else:
+            distanceData.set_distance_left(result_left.item())
+
+        if MyCar.midlane == -7:
+            distanceData.set_distance_right(float('inf'))
+        else:
+            distanceData.set_distance_right(result_right.item())
         distanceData.set_distance_mid(result_mid.item())
-        distanceData.set_distance_right(result_right.item())
         # print("distance : ", result_mid.item())
 
     return None

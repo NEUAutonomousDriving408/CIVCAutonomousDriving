@@ -39,13 +39,15 @@ def distance_estimation(x0, y0, x1, y1, args):
     return (temp1 + temp2) / 2000
 
 
-def make_parser():
+def make_parser(left_num, right_num):
     parser = argparse.ArgumentParser("YOLOX Demo!")
     # parser.add_argument(
     #     "demo", default="image", help="demo type, eg. image, video and webcam"
     # )
+    parser.add_argument("-lb", "--leftbound", type=int, default=left_num)
+    parser.add_argument("-rb", "--rightbound", type=int, default=right_num)
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
-    parser.add_argument("-n", "--name", type=str, default="yolox-tiny", help="model name")
+    parser.add_argument("-n", "--name", type=str, default="yolox-m", help="model name")
 
     parser.add_argument(
         "--path", default="./assets/dog.jpg", help="path to images or video"
@@ -62,11 +64,11 @@ def make_parser():
     parser.add_argument(
         "-f",
         "--exp_file",
-        default="./YOLOX/exps/default/yolox_tiny.py",
+        default="./YOLOX/exps/default/yolox_m.py",
         type=str,
         help="pls input your experiment description file",
     )
-    parser.add_argument("-c", "--ckpt", default=".//YOLOX/pretrainedmodel/yolox_tiny.pth", type=str, help="ckpt for eval")
+    parser.add_argument("-c", "--ckpt", default=".//YOLOX/pretrainedmodel/yolox_m.pth", type=str, help="ckpt for eval")
     parser.add_argument(
         "--device",
         default="gpu",
@@ -279,14 +281,18 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
                 (outputs[0][i][6] == 2 or outputs[0][i][6] == 7 or outputs[0][i][6] == 5 or outputs[0][i][6] == 6):
                 if (MyCar.midlane == 0 or MyCar.midlane == 7) and \
                     MyCar.changing == False and \
-                    centroidX <= 305 and bottomY < 350: 
+                    centroidX <= args.leftbound: 
                     if centroidX > left_position:
                         left_index = i 
+                    if outputs[0][i][2] - outputs[0][i][0] > 90:
+                        left_index = i
 
             if (MyCar.midlane == 0 or MyCar.midlane == -7) and \
                     MyCar.changing == False and \
-                    centroidX >= 335 and bottomY < 350:
+                    centroidX >= args.rightbound:
                     if centroidX < right_position:
+                        right_index = i
+                    if outputs[0][i][2] - outputs[0][i][0] > 90:
                         right_index = i
         
         if left_index != -1:
@@ -311,13 +317,13 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
                 centroidX = outputs[0][i][0] + (outputs[0][i][2] - outputs[0][i][0]) / 2
                 bottomY = outputs[0][i][3]
 
-                if centroidX > 305 and centroidX < 335 and bottomY < 350:
+                if centroidX > args.leftbound and centroidX < args.rightbound and bottomY < 350:
                     distance_mid = distance_estimation(outputs[0][i][0].cpu().clone(), 
                                                         outputs[0][i][1].cpu().clone(), 
                                                         outputs[0][i][2].cpu().clone(), 
                                                         outputs[0][i][3].cpu().clone(), 
                                                         args)
-                if outputs[0][i][2] - outputs[0][i][0] > 260 and bottomY < 390:
+                if outputs[0][i][2] - outputs[0][i][0] > 230 and bottomY < 390:
                     distance_mid = distance_estimation(outputs[0][i][0].cpu().clone(), 
                                                         outputs[0][i][1].cpu().clone(), 
                                                         outputs[0][i][2].cpu().clone(), 
@@ -327,6 +333,11 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
                                         
     result_image = predictor.visual(outputs[0], img_info, predictor.confthre)
     img = cv2.cvtColor(result_image, cv2.COLOR_RGB2BGR)
+    # cv2.putText(img,"wei", (225, 100), 1, 2, (0,0,0))
+    templeft = args.leftbound // 1.3333
+    tempright = args.rightbound // 1.333
+    cv2.line(img, (227, 100), (227, 300), (0,0,0), 1, 4)
+    cv2.line(img, (252, 100), (252, 300), (0,0,0), 1, 4)
     cv2.imshow("AfterProcessing", img)
     cv2.waitKey(1)
 

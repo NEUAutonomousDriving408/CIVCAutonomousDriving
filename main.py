@@ -26,6 +26,8 @@ if __name__ == '__main__':
     password = 'ps123456'
     # whether initialize perception model
     perceptionFlag = True
+    image_left_bound = 303
+    image_right_bound = 337
 
     result = ADCPlatform.start(serverUrl, username, password)
 
@@ -35,7 +37,7 @@ if __name__ == '__main__':
         ADCPlatform.start_task()
         
         # init func get sensor data
-        SensorId, Controller, PerceptionArgs, MyCar = initial.init(perceptionFlag)
+        SensorId, Controller, PerceptionArgs, MyCar = initial.init(perceptionFlag, image_left_bound, image_right_bound)
 
         # multi thread
         thread1 = threading.Thread(target=sensor.run, args=(SensorId, data, ))
@@ -47,16 +49,42 @@ if __name__ == '__main__':
         """
         这里加入感知图片返回数据主要改planning
         """
-        previous_distance = float('inf')
-        current_distance = float('inf')
+        previous_distance_mid = float('inf')
+        current_distance_mid = float('inf')
+        previous_distance_left = float('inf')
+        current_distance_left = float('inf')
+        previous_distance_right = float('inf')
+        current_distance_right = float('inf')
 
         epoch = 1
         while True:
-            if distanceData.get_distance()[1] != float('inf'):
-                _, previous_distance, _ =  distanceData.get_distance()
+
+            # data number processing
+            distance_left,  distance_mid, distance_right = distanceData.get_distance()
+            
+            if distance_mid != float('inf'):
+                previous_distance_mid = distance_mid
             else:
-                current_distance = previous_distance
-            print("current_distance: ", current_distance)
+                current_distance_mid = previous_distance_mid
+                distanceData.set_distance_mid(current_distance_mid)
+            
+            if MyCar.changing:
+                distanceData.set_distance_left(float('inf'))
+                distanceData.set_distance_right(float('inf'))
+                previous_distance_left = float('inf')
+                previous_distance_right = float('inf')
+            else:
+                if distance_left != float('inf'):
+                    previous_distance_left = distance_left
+                else:
+                    current_distance_left = previous_distance_left
+                    distanceData.set_distance_left(current_distance_left)
+                if distance_right != float('inf'):
+                    previous_distance_right = distance_right
+                else:
+                    current_distance_right = previous_distance_right
+                    distanceData.set_distance_right(current_distance_right)
+            print("current : ", distanceData.distance_mid, "left : ", distanceData.distance_left, "right : ", distanceData.distance_right)
             print("car decison : ", MyCar.cardecision)
 
             planning.run(distanceData, MyCar)
