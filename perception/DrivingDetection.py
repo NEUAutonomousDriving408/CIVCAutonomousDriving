@@ -6,6 +6,7 @@ import sys
 sys.path.append("../")
 import ADCPlatform
 from initial.initial import CarState
+from perception.isInTriangle import Vector2d, Triangle
 import argparse
 import os
 import time
@@ -269,6 +270,19 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
     distance_left = torch.tensor(float('inf'))
     distance_mid = torch.tensor(float('inf'))
     distance_right = torch.tensor(float('inf'))
+    triangle = Triangle()
+    triangle.pointA_.x_ = 240
+    triangle.pointA_.y_ = 175
+
+    triangle.pointB_.x_ = 160
+    triangle.pointB_.y_ = 250
+
+    triangle.pointC_.x_ = 320
+    triangle.pointC_.y_ = 250
+
+    point = Vector2d()
+    point.x_ = 5
+    point.y_ = 5.5
     
     """
     When detecting the bounding boxes, enter this branch.
@@ -371,16 +385,25 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
                 # bounding box centroid x pixel is between the two line
                 # and bottom y pixel is less than a threshold
                 # (delete the head of autonomous driving vechile)
-                if centroidX > args.leftbound and centroidX < args.rightbound and bottomY < 350:
-                    distance_mid = distance_estimation(outputs[0][i][0].cpu().clone(), 
-                                                        outputs[0][i][1].cpu().clone(), 
-                                                        outputs[0][i][2].cpu().clone(), 
-                                                        outputs[0][i][3].cpu().clone(), 
-                                                        args)
-                # if the bounding box is bigger than a threshold,
-                # meaning that a big box is in the front of the autonomous driving vehicle,
-                # there will be a situation that current vehicle and the front vechile is too close.
-                if outputs[0][i][2] - outputs[0][i][0] > 230 and bottomY < 390:
+                # if centroidX > args.leftbound and centroidX < args.rightbound and bottomY < 350:
+                #     distance_mid = distance_estimation(outputs[0][i][0].cpu().clone(), 
+                #                                         outputs[0][i][1].cpu().clone(), 
+                #                                         outputs[0][i][2].cpu().clone(), 
+                #                                         outputs[0][i][3].cpu().clone(), 
+                #                                         args)
+                # # if the bounding box is bigger than a threshold,
+                # # meaning that a big box is in the front of the autonomous driving vehicle,
+                # # there will be a situation that current vehicle and the front vechile is too close.
+                # if outputs[0][i][2] - outputs[0][i][0] > 230 and bottomY < 390:
+                #     distance_mid = distance_estimation(outputs[0][i][0].cpu().clone(), 
+                #                                         outputs[0][i][1].cpu().clone(), 
+                #                                         outputs[0][i][2].cpu().clone(), 
+                #                                         outputs[0][i][3].cpu().clone(), 
+                #                                         args)
+                point.x_ = (outputs[0][i][0] + (outputs[0][i][2] - outputs[0][i][0]) / 2) / 1.3333
+                point.y_ = (outputs[0][i][1] + (outputs[0][i][3] - outputs[0][i][1]) / 2) / 1.333
+                
+                if triangle.isInTrangle(point):
                     distance_mid = distance_estimation(outputs[0][i][0].cpu().clone(), 
                                                         outputs[0][i][1].cpu().clone(), 
                                                         outputs[0][i][2].cpu().clone(), 
@@ -398,8 +421,11 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
     # visulize the two line of left bound and right bound
     templeft = args.leftbound // 1.3333
     tempright = args.rightbound // 1.333
-    cv2.line(img, (227, 100), (227, 300), (0,0,0), 1, 4)
-    cv2.line(img, (252, 100), (252, 300), (0,0,0), 1, 4)
+    # cv2.line(img, (227, 100), (227, 300), (0,0,0), 1, 4)
+    # cv2.line(img, (252, 100), (252, 300), (0,0,0), 1, 4)
+    cv2.line(img, (240, 175), (160, 250), (0,0,0), 1, 4)
+    cv2.line(img, (240, 175), (320, 250), (0,0,0), 1, 4)
+    cv2.line(img, (160, 250), (320, 250), (0,0,0), 1, 4)
 
     # image showing
     cv2.imshow("AfterProcessing", img)
