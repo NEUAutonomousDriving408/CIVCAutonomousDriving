@@ -1,5 +1,5 @@
-from initial.initial import CarState
-from perception.perception import DistanceData
+# from initial.initial import CarState
+# from perception.perception import DistanceData
 
 def findpath(distance, MyCar):
 
@@ -10,7 +10,7 @@ def findpath(distance, MyCar):
         MyCar.direction = 'right'
     elif whichlanenow == -7:
         if distance[0] < distance[1]:
-            MyCar,direction = 'mid'
+            MyCar.direction = 'mid'
             # MyCar.changing = True
             MyCar.cardecision = 'follow'
         else:

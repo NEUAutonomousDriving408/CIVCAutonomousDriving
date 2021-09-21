@@ -13,11 +13,16 @@ class CarState(object):
         self.midlane = 0            # 7 0 -7 latpid 参考 target
         self.positionnow = 0        # 两车道线A1求和
         self.changing = False       # 处于超车状态时为True
-        self.saftydistance = 12    # 与前车的安全距离
+        self.saftydistance = 10    # 与前车的安全距离 对于紧密跟车的情况 要准确识别并控速
         self.direction = 'mid'      # 当前行驶方向
 
 class ControlData(object):
     def __init__(self):
+
+        self.speeduplimit = 50
+        self.followlimit = 40
+        self.overtakelimit = 40
+
         self.lat_kp = 1.10
         self.lat_ki = 0.08
         self.lat_kd = 6.2

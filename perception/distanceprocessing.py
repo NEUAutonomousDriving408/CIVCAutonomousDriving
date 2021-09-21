@@ -1,5 +1,5 @@
-from initial.initial import CarState
-from perception.perception import DistanceData
+# from initial.initial import CarState
+# from perception.perception import DistanceData
 
 def run(distanceData, previous_distance, current_distance, MyCar):
 

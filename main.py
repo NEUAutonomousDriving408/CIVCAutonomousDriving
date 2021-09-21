@@ -39,22 +39,19 @@ if __name__ == '__main__':
         ADCPlatform.start_task()
         
         # init func get sensor data
-        SensorId, Controller, PerceptionArgs, MyCar = initial.init(perceptionFlag, image_left_bound, image_right_bound)
-
-        # multi thread
+        SensorId, Controller, PerceptionArgs, MyCar = initial.init(perceptionFlag,
+                                                                   image_left_bound,
+                                                                   image_right_bound)
+        # multi thread while true
         thread1 = threading.Thread(target=sensor.run, args=(SensorId, data, ))
-        thread2 = threading.Thread(target=perception.run, args=(perceptionFlag, data, PerceptionArgs, distanceData, MyCar, ))
-
+        thread2 = threading.Thread(target=perception.run, args=(perceptionFlag,
+                                                                data, PerceptionArgs,
+                                                                distanceData, MyCar, ))
         thread1.start()
         thread2.start()
 
-        """
-        这里加入感知图片返回数据主要改planning
-        """
-
         epoch = 1
         while True:
-
             distanceprocessing.run(distanceData, previous_distance, current_distance, MyCar)
       
             print("current : ", distanceData.distance_mid, "left : ", distanceData.distance_left, "right : ", distanceData.distance_right)
@@ -74,6 +71,8 @@ if __name__ == '__main__':
             epoch += 1
             if (epoch == 1000):
                 epoch = 1
+
+        # 到不了这里 能一直跑到平台关闭
         thread1.join()
         thread2.join()
 
