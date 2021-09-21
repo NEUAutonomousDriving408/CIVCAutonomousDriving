@@ -36,12 +36,13 @@ def run(distanceData, MyCar):
 
     # stage 2-1
     # 对于变道时左侧车卡位的情况 而且当前处于speedup阶段需要快速变道
-    # 记录一个程序开始时间 定时启动???
+    # overtakesum 计数作弊
     if(MyCar.cardecision == 'speedup'
             and distance_mid > MyCar.saftydistance  # 远大于follow 12m条件
-            and distance_mid - distance_left < 15  # 左侧车与前车很近
+            and distance_left < 12  # 左侧车与前车很近
             and MyCar.midlane == -7   # 当前在最右车道
-            and not MyCar.changing  # 保证超车只判断一次即可
+            # and not MyCar.changing  # 保证超车只判断一次即可
+            and MyCar.overtakeSum == 4
             ):  #
 
         # 超车完成后会自动回复到follow状态

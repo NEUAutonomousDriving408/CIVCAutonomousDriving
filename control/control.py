@@ -96,6 +96,7 @@ def overtakeJob(Controller, MyCar):
         MyCar.cardecision = 'follow'
         MyCar.direction = 'mid'
         MyCar.changing = False
+        MyCar.overtakeSum += 1
 
     # 横向控制 steer_ 加入角度速度约束
     latitudeyrControlpos(MyCar.yr, Controller.yrPid)

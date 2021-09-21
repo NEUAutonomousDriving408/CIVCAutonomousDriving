@@ -16,6 +16,8 @@ class CarState(object):
         self.saftydistance = 10    # 与前车的安全距离 对于紧密跟车的情况 要准确识别并控速
         self.direction = 'mid'      # 当前行驶方向
 
+        self.overtakeSum = 0
+
 class ControlData(object):
     def __init__(self):
 
