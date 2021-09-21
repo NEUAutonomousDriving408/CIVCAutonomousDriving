@@ -4,9 +4,7 @@
 
 import sys
 sys.path.append("../")
-import ADCPlatform
-from initial.initial import CarState
-from perception.isInTriangle import Vector2d, Triangle
+from tools.isInTriangle import Vector2d, Triangle
 import argparse
 import os
 import time
@@ -15,7 +13,6 @@ from loguru import logger
 import cv2
 
 import torch
-import numpy as np
 
 from yolox.data.data_augment import ValTransform
 from yolox.data.datasets import COCO_CLASSES

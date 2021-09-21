@@ -1,8 +1,7 @@
 import ADCPlatform
 import torch
 from yolox.data.datasets import COCO_CLASSES
-from yolox.exp import get_exp
-import control.pid as pid
+import tools.pid as pid
 import perception.DrivingDetection as detection
 
 class CarState(object):

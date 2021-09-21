@@ -10,7 +10,7 @@ def findpath(distance, MyCar):
         MyCar.direction = 'right'
     elif whichlanenow == -7:
         if distance[0] < distance[1]:
-            MyCar.direction = 'mid'
+            MyCar,direction = 'mid'
             # MyCar.changing = True
             MyCar.cardecision = 'follow'
         else:

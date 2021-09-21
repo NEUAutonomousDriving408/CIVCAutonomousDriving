@@ -32,21 +32,17 @@ class Triangle(object):
 
 def test():
     triangle = Triangle()
-    triangle.pointA_.x_ = 0
-    triangle.pointA_.y_ = 0
+    triangle.pointA_.x_ = 240
+    triangle.pointA_.y_ = 175
 
-    triangle.pointB_.x_ = 6
-    triangle.pointB_.y_ = 6
+    triangle.pointB_.x_ = 160
+    triangle.pointB_.y_ = 250
 
-    triangle.pointC_.x_ = 12
-    triangle.pointC_.y_ = 0
+    triangle.pointC_.x_ = 320
+    triangle.pointC_.y_ = 250
 
     point = Vector2d()
-    point.x_ = 5
-    point.y_ = 5.5
+    point.x_ = 290
+    point.y_ = 300
 
     print(triangle.isInTrangle(point))
-
-
-if __name__ == '__main__':
-    test()

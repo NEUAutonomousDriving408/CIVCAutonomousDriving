@@ -1,15 +1,11 @@
-import ADCPlatform
 import time
 from PIL import Image
 import numpy
-import torch
 
 import perception.DrivingDetection as detection
 
 import sys
 sys.path.append("../")
-import control.pid as pid
-from yolox.data.datasets import COCO_CLASSES
 
 class DistanceData:
     def __init__(self):
