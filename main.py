@@ -4,6 +4,7 @@ import planning.decision as planning
 import initial.initial as initial
 import sensor.loadsensor as sensor
 import perception.perception as perception
+import perception.distanceprocessing as distanceprocessing
 from perception.perception import DistanceData
 import threading
 
@@ -13,8 +14,9 @@ data["landLine"] = None
 data["radar"] = None
 data["image"] = None
 result = None
-# distance = {"data": float('inf')}
 distanceData = DistanceData()
+previous_distance =  DistanceData()
+current_distance = DistanceData()
 
 if __name__ == '__main__':
     # 开启平台SDK
@@ -49,41 +51,12 @@ if __name__ == '__main__':
         """
         这里加入感知图片返回数据主要改planning
         """
-        previous_distance_mid = float('inf')
-        current_distance_mid = float('inf')
-        previous_distance_left = float('inf')
-        current_distance_left = float('inf')
-        previous_distance_right = float('inf')
-        current_distance_right = float('inf')
 
         epoch = 1
         while True:
 
-            # data number processing
-            distance_left,  distance_mid, distance_right = distanceData.get_distance()
-            
-            if distance_mid != float('inf'):
-                previous_distance_mid = distance_mid
-            else:
-                current_distance_mid = previous_distance_mid
-                distanceData.set_distance_mid(current_distance_mid)
-            
-            if MyCar.changing:
-                distanceData.set_distance_left(float('inf'))
-                distanceData.set_distance_right(float('inf'))
-                previous_distance_left = float('inf')
-                previous_distance_right = float('inf')
-            else:
-                if distance_left != float('inf'):
-                    previous_distance_left = distance_left
-                else:
-                    current_distance_left = previous_distance_left
-                    distanceData.set_distance_left(current_distance_left)
-                if distance_right != float('inf'):
-                    previous_distance_right = distance_right
-                else:
-                    current_distance_right = previous_distance_right
-                    distanceData.set_distance_right(current_distance_right)
+            distanceprocessing.run(distanceData, previous_distance, current_distance, MyCar)
+      
             print("current : ", distanceData.distance_mid, "left : ", distanceData.distance_left, "right : ", distanceData.distance_right)
             print("car decison : ", MyCar.cardecision)
 

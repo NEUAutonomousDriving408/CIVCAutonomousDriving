@@ -283,35 +283,46 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
         right_index = -1
         right_position = 641 # image width pixel is 640 
 
+        # list1 store the index of model outputs 
+        # list2 store the bounding box area corresponding the list1 index
         leftlist1 = []
         leftlist2 = []
         rightlist1 = []
         rightlist2 = []
 
-        # first traversal 
+        """
+        First traversal
+        find a left and a right bounding box 
+        which is the biggest one of left bound and right bound.
+        """
         for i in range(outputs[0].shape[0]): 
+            # centroid x pixel of bounding box 
+            # bottom y this is the bottom bounding box  
             centroidX = outputs[0][i][0] + (outputs[0][i][2] - outputs[0][i][0]) / 2
             bottomY = outputs[0][i][3]
+
+            # judging the confidence greater model oututs (two numbers multipul)
+            # and judging the output classfications
+            # class numbers : 2(car), 5 (bus), 6(train), 7(truck)
             if outputs[0][i][4] * outputs[0][i][5] > predictor.confthre and \
-                (outputs[0][i][6] == 2 or outputs[0][i][6] == 7 or outputs[0][i][6] == 5 or outputs[0][i][6] == 6):
+                (outputs[0][i][6] == 2 or outputs[0][i][6] == 5 or outputs[0][i][6] == 7):
+                # when autonomous drving vehicle is in middle lane or in right lane,
+                # there will be a left bounding box to estimate distance.
                 if (MyCar.midlane == 0 or MyCar.midlane == -7) and \
                     MyCar.changing == False and \
                     centroidX <= args.leftbound: 
-                    left_index = i 
                     leftlist1.append(i)
                     leftlist2.append( (outputs[0][i][2] - outputs[0][i][0]) * (outputs[0][i][3] - outputs[0][i][1]) )
-                    # if outputs[0][i][2] - outputs[0][i][0] > 90:
-                    #     left_index = i
 
-            if (MyCar.midlane == 0 or MyCar.midlane == 7) and \
+                # when autonomous driving vehicle is in middle lane or left lane,
+                # there will be a right bounding box to estimate distance.
+                if (MyCar.midlane == 0 or MyCar.midlane == 7) and \
                     MyCar.changing == False and \
                     centroidX >= args.rightbound:
                     rightlist1.append(i)
                     rightlist2.append( (outputs[0][i][2] - outputs[0][i][0]) * (outputs[0][i][3] - outputs[0][i][1]) )
-                    # if centroidX < right_position:
-                    #     right_index = i
-                    # if outputs[0][i][2] - outputs[0][i][0] > 90:
-                    #     right_index = i
+
+        # pick up a index of detection model outputs
         if leftlist2:
             maxvalue_left = max(leftlist2)
             max_left_index = leftlist2.index(maxvalue_left)
@@ -320,8 +331,12 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
             maxvalue_right = max(rightlist2)
             max_right_index = rightlist2.index(maxvalue_right)
             right_index = rightlist1[max_right_index]
-
         
+        """
+        Judging index of distance estimation index existing
+        if index is existing, then calculate the distance of
+        left and right lane opposite to the current vehicle.
+        """
         if left_index != -1:
             distance_left = distance_estimation(outputs[0][left_index][0].cpu().clone(), 
                                                         outputs[0][left_index][1].cpu().clone(), 
@@ -335,36 +350,58 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
                                                         outputs[0][right_index][3].cpu().clone(), 
                                                         args)
         
-        # second traversal
+        """
+        Second traversal
+        find a middel bounding box
+        which is in the area that designed by us.
+        (current stratgy: judging the bounding box is between two line, 
+        including left bound line and right bound line)
+        """
         for i in range(outputs[0].shape[0]):
-            # class name is car or truck, and score greater than threshold
+            # judging the confidence greater than a threshold
+            # and class is the 2(car), 5(bus), 7(bus)
             if outputs[0][i][4] * outputs[0][i][5] > predictor.confthre and \
-                (outputs[0][i][6] == 2 or outputs[0][i][6] == 7 or outputs[0][i][6] == 5 or outputs[0][i][6] == 6):
+                (outputs[0][i][6] == 2 or outputs[0][i][6] == 5 or outputs[0][i][6] == 7):
 
+                # centroid x pixel number of current bounding box
                 centroidX = outputs[0][i][0] + (outputs[0][i][2] - outputs[0][i][0]) / 2
+                # bottom y pixel number of current bounding box
                 bottomY = outputs[0][i][3]
 
+                # bounding box centroid x pixel is between the two line
+                # and bottom y pixel is less than a threshold
+                # (delete the head of autonomous driving vechile)
                 if centroidX > args.leftbound and centroidX < args.rightbound and bottomY < 350:
                     distance_mid = distance_estimation(outputs[0][i][0].cpu().clone(), 
                                                         outputs[0][i][1].cpu().clone(), 
                                                         outputs[0][i][2].cpu().clone(), 
                                                         outputs[0][i][3].cpu().clone(), 
                                                         args)
+                # if the bounding box is bigger than a threshold,
+                # meaning that a big box is in the front of the autonomous driving vehicle,
+                # there will be a situation that current vehicle and the front vechile is too close.
                 if outputs[0][i][2] - outputs[0][i][0] > 230 and bottomY < 390:
                     distance_mid = distance_estimation(outputs[0][i][0].cpu().clone(), 
                                                         outputs[0][i][1].cpu().clone(), 
                                                         outputs[0][i][2].cpu().clone(), 
                                                         outputs[0][i][3].cpu().clone(), 
                                                         args)
-                    # print(i, distance)
-                                        
+
+    """
+    image post processing and showing
+    """          
+    # visulize the bounding box into the original image            
     result_image = predictor.visual(outputs[0], img_info, predictor.confthre)
     img = cv2.cvtColor(result_image, cv2.COLOR_RGB2BGR)
     # cv2.putText(img,"wei", (225, 100), 1, 2, (0,0,0))
+
+    # visulize the two line of left bound and right bound
     templeft = args.leftbound // 1.3333
     tempright = args.rightbound // 1.333
     cv2.line(img, (227, 100), (227, 300), (0,0,0), 1, 4)
     cv2.line(img, (252, 100), (252, 300), (0,0,0), 1, 4)
+
+    # image showing
     cv2.imshow("AfterProcessing", img)
     cv2.waitKey(1)
 
