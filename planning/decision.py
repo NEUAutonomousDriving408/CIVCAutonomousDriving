@@ -27,11 +27,27 @@ def run(distanceData, MyCar):
     if(MyCar.cardecision == 'follow'
             and distance_mid < MyCar.saftydistance
             and not MyCar.changing  # 保证超车只判断一次即可
-            and MyCar.speed < 44):  # follow 已将车速降下来
+            and MyCar.speed < 43):  # follow 已将车速降下来
 
         # 超车完成后会自动回复到follow状态
         MyCar.cardecision = 'overtake'
         findpath(distance, MyCar)  # left or right
+        return
+
+    # stage 2-1
+    # 对于变道时左侧车卡位的情况 而且当前处于speedup阶段需要快速变道
+    # 记录一个程序开始时间 定时启动???
+    if(MyCar.cardecision == 'speedup'
+            and distance_mid > MyCar.saftydistance  # 远大于follow 12m条件
+            and distance_mid - distance_left < 15  # 左侧车与前车很近
+            and MyCar.midlane == -7   # 当前在最右车道
+            and not MyCar.changing  # 保证超车只判断一次即可
+            ):  #
+
+        # 超车完成后会自动回复到follow状态
+        MyCar.cardecision = 'overtake'
+        # findpath(distance, MyCar)  # left or right
+        MyCar.direction = 'left'
         return
 
     # stage 3
