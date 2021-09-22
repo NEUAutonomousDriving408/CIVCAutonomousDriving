@@ -19,7 +19,7 @@ class Triangle(object):
         self.pointB_ = Vector2d()
         self.pointC_ = Vector2d()
 
-    def isInTrangle(self, target):
+    def isInTriangle(self, target):
         PA = self.pointA_.Minus(target)
         PB = self.pointB_.Minus(target)
         PC = self.pointC_.Minus(target)

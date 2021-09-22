@@ -270,6 +270,7 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
     triangle = Triangle()
     triangle_left = Triangle()
     triangle_right = Triangle()
+
     triangle.pointA_.x_ = 240
     triangle.pointA_.y_ = 175
 
@@ -278,6 +279,24 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
 
     triangle.pointC_.x_ = 320
     triangle.pointC_.y_ = 250
+
+    triangle_left.pointA_.x_ = 240
+    triangle_left.pointA_.y_ = 175
+
+    triangle_left.pointB_.x_ = 160
+    triangle_left.pointB_.y_ = 250
+
+    triangle_left.pointC_.x_ = -70
+    triangle_left.pointC_.y_ = 280
+
+    triangle_right.pointA_.x_ = 240
+    triangle_right.pointA_.y_ = 175
+
+    triangle_right.pointB_.x_ = 550
+    triangle_right.pointB_.y_ = 280
+
+    triangle_right.pointC_.x_ = 320
+    triangle_right.pointC_.y_ = 250
 
     point = Vector2d()
     point.x_ = 5
@@ -319,11 +338,13 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
             # class numbers : 2(car), 5 (bus), 6(train), 7(truck)
             if outputs[0][i][4] * outputs[0][i][5] > predictor.confthre and \
                 (outputs[0][i][6] == 2 or outputs[0][i][6] == 5 or outputs[0][i][6] == 7):
+                point.x_ = (outputs[0][i][0] + (outputs[0][i][2] - outputs[0][i][0]) / 2) / 1.33333
+                point.y_ = outputs[0][i][3] / 1.33333
                 # when autonomous drving vehicle is in middle lane or in right lane,
                 # there will be a left bounding box to estimate distance.
                 if (MyCar.midlane == 0 or MyCar.midlane == -7) and \
                     MyCar.changing == False and \
-                    centroidX <= args.leftbound: 
+                    triangle_left.isInTriangle(point): 
                     leftlist1.append(i)
                     leftlist2.append( (outputs[0][i][2] - outputs[0][i][0]) * (outputs[0][i][3] - outputs[0][i][1]) )
 
@@ -331,7 +352,7 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
                 # there will be a right bounding box to estimate distance.
                 if (MyCar.midlane == 0 or MyCar.midlane == 7) and \
                     MyCar.changing == False and \
-                    centroidX >= args.rightbound:
+                    triangle_right.isInTriangle(point):
                     rightlist1.append(i)
                     rightlist2.append( (outputs[0][i][2] - outputs[0][i][0]) * (outputs[0][i][3] - outputs[0][i][1]) )
 
@@ -400,9 +421,9 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
                 #                                         outputs[0][i][3].cpu().clone(), 
                 #                                         args)
                 point.x_ = (outputs[0][i][0] + (outputs[0][i][2] - outputs[0][i][0]) / 2) / 1.3333
-                point.y_ = (outputs[0][i][1] + (outputs[0][i][3] - outputs[0][i][1]) / 2) / 1.333
-                
-                if triangle.isInTrangle(point):
+                # point.y_ = (outputs[0][i][1] + (outputs[0][i][3] - outputs[0][i][1]) / 2) / 1.333
+                point.y_ = outputs[0][i][3] / 1.3333
+                if triangle.isInTriangle(point):
                     distance_mid = distance_estimation(outputs[0][i][0].cpu().clone(), 
                                                         outputs[0][i][1].cpu().clone(), 
                                                         outputs[0][i][2].cpu().clone(), 
@@ -427,10 +448,10 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
     cv2.line(img, (160, 250), (320, 250), (0,0,0), 1, 4)
 
     # left and right line
-    cv2.line(img, (240, 175), (10, 250), (0,0,0), 1, 4)
-    cv2.line(img, (10, 250), (160, 250), (0,0,0), 1, 4)
-    cv2.line(img, (240, 175), (470, 250), (0,0,0), 1, 4)
-    cv2.line(img, (470, 250), (320, 250), (0,0,0), 1, 4)
+    cv2.line(img, (240, 175), (-70, 280), (0,0,0), 1, 4)
+    cv2.line(img, (-70, 280), (160, 250), (0,0,0), 1, 4)
+    cv2.line(img, (240, 175), (550, 280), (0,0,0), 1, 4)
+    cv2.line(img, (550, 280), (320, 250), (0,0,0), 1, 4)
 
     # image showing
     cv2.imshow("AfterProcessing", img)
