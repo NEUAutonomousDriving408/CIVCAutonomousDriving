@@ -314,6 +314,7 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
         left_position = -1   # 0 - 1
         right_index = -1
         right_position = 641 # image width pixel is 640 
+        mid_index = -1
 
         # list1 store the index of model outputs 
         # list2 store the bounding box area corresponding the list1 index
@@ -321,6 +322,8 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
         leftlist2 = []
         rightlist1 = []
         rightlist2 = []
+        midlist1 = []
+        midlist2 = []
 
         """
         First traversal
@@ -421,13 +424,21 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
                 #                                         outputs[0][i][3].cpu().clone(), 
                 #                                         args)
                 point.x_ = (outputs[0][i][0] + (outputs[0][i][2] - outputs[0][i][0]) / 2) / 1.3333
-                # point.y_ = (outputs[0][i][1] + (outputs[0][i][3] - outputs[0][i][1]) / 2) / 1.333
                 point.y_ = outputs[0][i][3] / 1.3333
                 if triangle.isInTriangle(point):
-                    distance_mid = distance_estimation(outputs[0][i][0].cpu().clone(), 
-                                                        outputs[0][i][1].cpu().clone(), 
-                                                        outputs[0][i][2].cpu().clone(), 
-                                                        outputs[0][i][3].cpu().clone(), 
+                    midlist1.append(i)
+                    midlist2.append( (outputs[0][i][2] - outputs[0][i][0]) * (outputs[0][i][3] - outputs[0][i][1]) )
+        
+        if midlist2:
+            max_value_mid = max(midlist2)
+            max_mid_index = midlist2.index(max_value_mid)
+            mid_index = midlist1[max_mid_index]
+        
+        if mid_index != -1:
+            distance_mid = distance_estimation(outputs[0][mid_index][0].cpu().clone(), 
+                                                        outputs[0][mid_index][1].cpu().clone(), 
+                                                        outputs[0][mid_index][2].cpu().clone(), 
+                                                        outputs[0][mid_index][3].cpu().clone(), 
                                                         args)
 
     """

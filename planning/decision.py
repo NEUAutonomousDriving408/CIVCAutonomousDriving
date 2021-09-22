@@ -16,6 +16,11 @@ def run(distanceData, MyCar):
     distance_left, distance_mid, distance_right = distanceData.get_distance() 
     distance = [distance_left, distance_mid, distance_right]
 
+    if MyCar.cardecision == 'follow' and MyCar.speed < 41:
+        MyCar.saftydistance = 9
+    else:
+        MyCar.saftydistance = 13
+
     # stage 1
     # 读取sensor 正前方车辆距离数据 如果距离达到安全距离即可跟车
     if(distance_mid < MyCar.saftydistance and MyCar.cardecision == 'speedup'):  # 小于10米开始减速
@@ -39,7 +44,7 @@ def run(distanceData, MyCar):
     # overtakesum 计数作弊
     if(MyCar.cardecision == 'speedup'
             and distance_mid > MyCar.saftydistance  # 远大于follow 12m条件
-            and distance_left < 11  # 左侧车与前车很近
+            and distance_left < MyCar.saftydistance  # 左侧车与前车很近
             and MyCar.midlane == -7   # 当前在最右车道
             and distance_mid - distance_left < 15
             # and not MyCar.changing  # 保证超车只判断一次即可
@@ -57,7 +62,7 @@ def run(distanceData, MyCar):
     # overtakesum 计数作弊
     if(MyCar.cardecision == 'speedup'
             and distance_mid > MyCar.saftydistance  # 远大于follow 12m条件
-            and distance_right < 11  # 左侧车与前车很近
+            and distance_right < MyCar.saftydistance  # 左侧车与前车很近
             and MyCar.midlane == 7   # 当前在最右车道
             and distance_mid - distance_right < 15
             # and not MyCar.changing  # 保证超车只判断一次即可

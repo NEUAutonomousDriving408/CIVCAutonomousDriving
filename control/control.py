@@ -48,16 +48,17 @@ def lontitudeControlSpeed(speed, lonPid):
     elif (lonPid.output > 0):  # 下侧 微调
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 3')
         lonPid.thorro_ = (lonPid.output / speedPidThread_2) * 0.3
-        lonPid.brake_= ((speedPidThread_2 - lonPid.output) / speedPidThread_2) * 0.2
+        lonPid.brake_= ((speedPidThread_2 - lonPid.output) / speedPidThread_2) * 0.5
     elif (lonPid.output < -1 * speedPidThread_1):  # 减速阶段
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 4')
         lonPid.thorro_ = (-1 * lonPid.output / 5) * 0.3
-        lonPid.brake_= 0.7
+        lonPid.brake_= 0.8
     else :
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 5')
         lonPid.thorro_ = (-1 * lonPid.output / speedPidThread_2) * 0.15
-        lonPid.brake_ = ((speedPidThread_2 - (-1 * lonPid.output)) / speedPidThread_2) * 0.5
-    # print(lonPid.thorro_, '    ', lonPid.brake_)
+        lonPid.brake_ = abs((speedPidThread_2 - (-1 * lonPid.output)) / speedPidThread_2) * 0.6
+        # lonPid.brake_ = 1.0
+    print(lonPid.thorro_, '    ', lonPid.brake_)
 
 
 def speedupJob(Controller, MyCar):
@@ -92,7 +93,7 @@ def overtakeJob(Controller, MyCar):
 
     # overtake 切换 follow 状态跟车
     print("minus : ", MyCar.midlane - MyCar.positionnow)
-    if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.2):
+    if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.4):
         MyCar.cardecision = 'follow'
         MyCar.direction = 'mid'
         MyCar.changing = False
@@ -143,4 +144,4 @@ def run(Controller, MyCar, SensorID):
     elif (MyCar.cardecision == 'follow'):
         followJob(Controller, MyCar)
 
-    print(MyCar.cardecision, MyCar.midlane, MyCar.direction)
+    # print(MyCar.cardecision, MyCar.midlane, MyCar.direction)
