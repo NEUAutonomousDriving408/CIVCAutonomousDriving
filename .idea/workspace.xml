@@ -11,7 +11,6 @@
   <component name="ChangeListManager">
     <list default="true" id="4e3f8a0f-c30d-4ea7-94ea-14551e089a53" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/planning/decision.py" beforeDir="false" afterPath="$PROJECT_DIR$/planning/decision.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -147,7 +146,14 @@
       <option name="project" value="LOCAL" />
       <updated>1632212131405</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="add overtake sum :P">
+      <created>1632213039633</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1632213039633</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -170,6 +176,7 @@
     <MESSAGE value="add istriangle judgement methord" />
     <MESSAGE value="add tools folder" />
     <MESSAGE value="clean the project , version 3.0 publish" />
-    <option name="LAST_COMMIT_MESSAGE" value="clean the project , version 3.0 publish" />
+    <MESSAGE value="add overtake sum :P" />
+    <option name="LAST_COMMIT_MESSAGE" value="add overtake sum :P" />
   </component>
 </project>
