@@ -39,16 +39,35 @@ def run(distanceData, MyCar):
     # overtakesum 计数作弊
     if(MyCar.cardecision == 'speedup'
             and distance_mid > MyCar.saftydistance  # 远大于follow 12m条件
-            and distance_left < 12  # 左侧车与前车很近
+            and distance_left < 11  # 左侧车与前车很近
             and MyCar.midlane == -7   # 当前在最右车道
+            and distance_mid - distance_left < 15
             # and not MyCar.changing  # 保证超车只判断一次即可
-            and MyCar.overtakeSum == 4
+            # and MyCar.overtakeSum == 9
             ):  #
 
         # 超车完成后会自动回复到follow状态
         MyCar.cardecision = 'overtake'
         # findpath(distance, MyCar)  # left or right
         MyCar.direction = 'left'
+        return
+
+    # stage 2-2
+    # 对于变道时左侧车卡位的情况 而且当前处于speedup阶段需要快速变道
+    # overtakesum 计数作弊
+    if(MyCar.cardecision == 'speedup'
+            and distance_mid > MyCar.saftydistance  # 远大于follow 12m条件
+            and distance_right < 11  # 左侧车与前车很近
+            and MyCar.midlane == 7   # 当前在最右车道
+            and distance_mid - distance_right < 15
+            # and not MyCar.changing  # 保证超车只判断一次即可
+            # and MyCar.overtakeSum == 9
+            ):  #
+
+        # 超车完成后会自动回复到follow状态
+        MyCar.cardecision = 'overtake'
+        # findpath(distance, MyCar)  # left or right
+        MyCar.direction = 'right'
         return
 
     # stage 3

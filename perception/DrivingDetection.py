@@ -268,6 +268,8 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
     distance_mid = torch.tensor(float('inf'))
     distance_right = torch.tensor(float('inf'))
     triangle = Triangle()
+    triangle_left = Triangle()
+    triangle_right = Triangle()
     triangle.pointA_.x_ = 240
     triangle.pointA_.y_ = 175
 
@@ -423,6 +425,12 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
     cv2.line(img, (240, 175), (160, 250), (0,0,0), 1, 4)
     cv2.line(img, (240, 175), (320, 250), (0,0,0), 1, 4)
     cv2.line(img, (160, 250), (320, 250), (0,0,0), 1, 4)
+
+    # left and right line
+    cv2.line(img, (240, 175), (10, 250), (0,0,0), 1, 4)
+    cv2.line(img, (10, 250), (160, 250), (0,0,0), 1, 4)
+    cv2.line(img, (240, 175), (470, 250), (0,0,0), 1, 4)
+    cv2.line(img, (470, 250), (320, 250), (0,0,0), 1, 4)
 
     # image showing
     cv2.imshow("AfterProcessing", img)
