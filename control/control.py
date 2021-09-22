@@ -51,12 +51,12 @@ def lontitudeControlSpeed(speed, lonPid):
         lonPid.brake_= ((speedPidThread_2 - lonPid.output) / speedPidThread_2) * 0.2
     elif (lonPid.output < -1 * speedPidThread_1):  # 减速阶段
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 4')
-        lonPid.thorro_ = (-1 * lonPid.output / 5) * 0.2
-        lonPid.brake_= 0.5
+        lonPid.thorro_ = (-1 * lonPid.output / 5) * 0.3
+        lonPid.brake_= 0.7
     else :
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 5')
         lonPid.thorro_ = (-1 * lonPid.output / speedPidThread_2) * 0.15
-        lonPid.brake_ = ((speedPidThread_2 - (-1 * lonPid.output)) / speedPidThread_2) * 0.4
+        lonPid.brake_ = ((speedPidThread_2 - (-1 * lonPid.output)) / speedPidThread_2) * 0.5
     # print(lonPid.thorro_, '    ', lonPid.brake_)
 
 

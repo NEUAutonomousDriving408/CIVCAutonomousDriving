@@ -22,11 +22,11 @@ git checkout -b dev
 git push --set-upstream origin dev
 
 #### 删除分支
-1.1.git branch 查看本地分支
+1.1.查看本地分支 git branch 
 1.2.查看远程分支 git branch -r
 
-2.删除本地分支 xld-control-pid。 
-(1) git checkout xld-control-changelane 删除分支前先切换到其他分支 
-(2) git branch -D xld-control-pid
+2.删除本地分支 
+git branch -D xld-control-pid
 
-3.删除远程分支 git push origin --delete xld-control-pid
+3.删除远程分支 
+git push origin --delete xld-control-pid
