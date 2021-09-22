@@ -4,5 +4,6 @@
 .idea
 # python cash files
 *.pyc 
+__pycash__
 # mac default files
 .DS_Store
