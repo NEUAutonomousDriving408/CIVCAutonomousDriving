@@ -53,15 +53,15 @@ def lontitudeControlSpeed(speed, lonPid):
     elif (lonPid.output < -1 * speedPidThread_1):  # 减速一阶段
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 4')
         lonPid.thorro_ = (-1 * lonPid.output / 5) * 0.3
-        # 减速第一阶段 仍然大于3m/s2 可选1.0
+        # 减速第一阶段 仍然大于3m/s2 可选1.0 直接强制刹车
         lonPid.brake_= 0.8
     else :
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 5')
         lonPid.thorro_ = (-1 * lonPid.output / speedPidThread_2) * 0.15
-        # 减速二阶段
-        lonPid.brake_ = abs((speedPidThread_2 - (-1 * lonPid.output)) / speedPidThread_2) * 0.6
+        # 减速二阶段                 abs(2 - (2~10))/2 * 0.6
+        lonPid.brake_ = min(abs((speedPidThread_2 - (-1 * lonPid.output)) / speedPidThread_2) * 0.6, 1.0)
         # lonPid.brake_ = 1.0
-    print(lonPid.thorro_, '    ', lonPid.brake_)
+    # print(lonPid.thorro_, '    ', lonPid.brake_)
 
 
 def speedupJob(Controller, MyCar):
