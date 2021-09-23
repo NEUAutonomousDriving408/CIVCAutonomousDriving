@@ -50,27 +50,14 @@ if __name__ == '__main__':
         thread1.start()
         thread2.start()
 
-        epoch = 1
         while True:
             distanceprocessing.run(distanceData, previous_distance, current_distance, MyCar)
       
             print("current : ", distanceData.distance_mid, "left : ", distanceData.distance_left, "right : ", distanceData.distance_right)
-            print("car decison : ", MyCar.cardecision)
+            # print("car decison : ", MyCar.cardecision)
 
             planning.run(distanceData, MyCar)
             control.run(Controller, MyCar, SensorId)
-
-            # if (MyCar.speed > 58):
-            #     MyCar.cardecision = 'follow'
-            # if (MyCar.cardecision == 'follow'
-            #         and not MyCar.changing
-            #         and MyCar.speed < 41):
-            #     MyCar.cardecision = 'overtake'
-            #     direction = 'right'
-
-            epoch += 1
-            if (epoch == 1000):
-                epoch = 1
 
         # 到不了这里 能一直跑到平台关闭
         thread1.join()

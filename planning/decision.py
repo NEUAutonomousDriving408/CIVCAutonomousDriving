@@ -9,15 +9,18 @@ stage 3 : changelane 变道
 # 一开始都不满足 都不执行 仍然一直加速 直到stage1满足
 # 当速度减小到40的时候stage2满足 求解出当前怎样变道 并切换overtake状态直到变道完成置位follow
 # 如果与前车距离过远 加速一下 stage1等待满足
-# * 此处没有overtake的状态机 主要在control中完成 overttake结束后自动切换至follow
+# 此处没有overtake的状态机 主要在control中完成 overtake结束后自动切换至follow
 '''
 
 def run(distanceData, MyCar):
     distance_left, distance_mid, distance_right = distanceData.get_distance() 
     distance = [distance_left, distance_mid, distance_right]
 
-    if MyCar.cardecision == 'follow' and MyCar.speed < 41:
+    # 用于解40速度时连续变道导致前车距离过大
+    if MyCar.cardecision == 'follow' and MyCar.speed < 43:
+        # 低速时安全距离为9米
         MyCar.saftydistance = 9
+        # 高速时为13 相信速度控制
     else:
         MyCar.saftydistance = 13
 
@@ -33,7 +36,6 @@ def run(distanceData, MyCar):
             and distance_mid < MyCar.saftydistance
             and not MyCar.changing  # 保证超车只判断一次即可
             and MyCar.speed < 43):  # follow 已将车速降下来
-
         # 超车完成后会自动回复到follow状态
         MyCar.cardecision = 'overtake'
         findpath(distance, MyCar)  # left or right
@@ -47,10 +49,8 @@ def run(distanceData, MyCar):
             and distance_left < MyCar.saftydistance  # 左侧车与前车很近
             and MyCar.midlane == -7   # 当前在最右车道
             and distance_mid - distance_left < 15
-            # and not MyCar.changing  # 保证超车只判断一次即可
             # and MyCar.overtakeSum == 9
-            ):  #
-
+            ):
         # 超车完成后会自动回复到follow状态
         MyCar.cardecision = 'overtake'
         # findpath(distance, MyCar)  # left or right
@@ -58,17 +58,13 @@ def run(distanceData, MyCar):
         return
 
     # stage 2-2
-    # 对于变道时左侧车卡位的情况 而且当前处于speedup阶段需要快速变道
-    # overtakesum 计数作弊
+    # 对于变道时右侧车卡位的情况 而且当前处于speedup阶段需要快速变道
     if(MyCar.cardecision == 'speedup'
             and distance_mid > MyCar.saftydistance  # 远大于follow 12m条件
             and distance_right < MyCar.saftydistance  # 左侧车与前车很近
-            and MyCar.midlane == 7   # 当前在最右车道
+            and MyCar.midlane == 7   # 当前在最左车道
             and distance_mid - distance_right < 15
-            # and not MyCar.changing  # 保证超车只判断一次即可
-            # and MyCar.overtakeSum == 9
-            ):  #
-
+            ):
         # 超车完成后会自动回复到follow状态
         MyCar.cardecision = 'overtake'
         # findpath(distance, MyCar)  # left or right

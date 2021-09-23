@@ -52,8 +52,8 @@ git reset --hard version-number
 
 git reset version-number
 
-`回退到上一个版本`
-git revert
+`回退到上一个版本 不加^会有原地恢复的问题`
+git revert HEAD
 
 
 
