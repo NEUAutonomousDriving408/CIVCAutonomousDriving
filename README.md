@@ -3,7 +3,10 @@
 #### 介绍
 Python Implementation of Autunomous Driving Simulation
 
-![overtake](images/overtake.gif)
+![high speed overtake](images/70km.gif)
+
+![overtake example](images/50km.gif)
+
 ![当前最高得分](images/score52.png)
 
 #### 软件架构
