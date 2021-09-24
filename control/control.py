@@ -37,7 +37,7 @@ stage 5 - 减速微调
 '''
 def lontitudeControlSpeed(speed, lonPid):
     lonPid.update(speed-5.0)
-    if (lonPid.output > speedPidThread_1): # 加速阶段
+    if (lonPid.output > speedPidThread_1):    # 加速阶段
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 1')
         lonPid.thorro_ = 1
         lonPid.brake_ = 0
@@ -45,20 +45,23 @@ def lontitudeControlSpeed(speed, lonPid):
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 2')
         lonPid.thorro_ = min((lonPid.output / speedPidThread_1) * 0.85, 1.0)
         lonPid.brake_ = min(((speedPidThread_1 - lonPid.output) / speedPidThread_1) * 0.1, 1.0)
-    elif (lonPid.output > 0):  # 下侧 微调
+    elif (lonPid.output > 0):                 # 下侧 微调
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 3')
         lonPid.thorro_ = (lonPid.output / speedPidThread_2) * 0.3
+        # 0.5会有稍减速的效果40-38 防碰撞
         lonPid.brake_= ((speedPidThread_2 - lonPid.output) / speedPidThread_2) * 0.5
-    elif (lonPid.output < -1 * speedPidThread_1):  # 减速阶段
+    elif (lonPid.output < -1 * speedPidThread_1):  # 减速一阶段
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 4')
         lonPid.thorro_ = (-1 * lonPid.output / 5) * 0.3
+        # 减速第一阶段 仍然大于3m/s2 可选1.0 直接强制刹车
         lonPid.brake_= 1.0
     else :
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 5')
         lonPid.thorro_ = (-1 * lonPid.output / speedPidThread_2) * 0.15
-        # lonPid.brake_ = abs((speedPidThread_2 - (-1 * lonPid.output)) / speedPidThread_2) * 0.6
-        lonPid.brake_ = 1.0
-    print(lonPid.thorro_, '    ', lonPid.brake_)
+        # 减速二阶段                 abs(2 - (2~10))/2 * 0.6
+        lonPid.brake_ = min(abs((speedPidThread_2 - (-1 * lonPid.output)) / speedPidThread_2) * 0.6, 1.0)
+        # lonPid.brake_ = 1.0
+    # print(lonPid.thorro_, '    ', lonPid.brake_)
 
 
 def speedupJob(Controller, MyCar):
@@ -84,14 +87,17 @@ def overtakeJob(Controller, MyCar):
 
     # overtake 车道中线调整
     if (not MyCar.changing):
+        # 最左侧不可左变道
         if (MyCar.direction == 'left'):
-            MyCar.midlane = min(7 , 7 + MyCar.midlane) # 最左侧不可左变道
+            MyCar.midlane = min(7 , 7 + MyCar.midlane)
+        # 最右侧不可右变道
         elif (MyCar.direction == 'right'):
             MyCar.midlane = max(-7 , -7 + MyCar.midlane)
         Controller.latPid.setSetpoint(MyCar.midlane)
-        MyCar.changing = True # 更新中线 进入超车
+        # 更新中线state 进入超车
+        MyCar.changing = True
 
-    # overtake 切换 follow 状态跟车
+    # overtake 完成 切换 follow 状态跟车
     print("minus : ", MyCar.midlane - MyCar.positionnow)
     if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.5):
         MyCar.cardecision = 'speedup'
@@ -100,7 +106,7 @@ def overtakeJob(Controller, MyCar):
         MyCar.overtakeSum += 1
 
     # 横向控制 steer_ 加入角度速度约束
-    latitudeyrControlpos(MyCar.yr, Controller.yrPid)
+    # latitudeyrControlpos(MyCar.yr, Controller.yrPid)
     # print('yr is', MyCar.yr, 'steeryr is', Controller.yrPid.yrsteer_) # overtake >15 , normal < 3
     # print('latsteer is ', Controller.latPid.steer_)
     latitudeControlpos(MyCar.positionnow, Controller.latPid)
@@ -108,8 +114,6 @@ def overtakeJob(Controller, MyCar):
                         Controller.latPid.steer_,  # - Controller.yrPid.yrsteer_,
                         Controller.speedPid.brake_, 1)
 
-''' xld - speed control
-'''
 def run(Controller, MyCar, SensorID):
 
     # 获取车辆控制数据包

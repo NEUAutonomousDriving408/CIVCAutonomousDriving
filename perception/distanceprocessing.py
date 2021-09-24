@@ -8,6 +8,7 @@ def run(distanceData, previous_distance, current_distance, MyCar):
     """
     distance data smothing to better planning and control
     """
+
     if distance_mid != float('inf'):
         previous_distance.set_distance_mid(distance_mid)
     else:
@@ -30,7 +31,14 @@ def run(distanceData, previous_distance, current_distance, MyCar):
         else:
             current_distance.set_distance_right(previous_distance.distance_right)
             distanceData.set_distance_right(current_distance.distance_right)
-
+    
+    # TODO:distance judging bug
+    if MyCar.overtakeSum > MyCar.lastovertakeSum:
+        distanceData.set_distance_mid(float('inf'))
+        distanceData.set_distance_left(float('inf'))
+        distanceData.set_distance_right(float('inf'))
+        MyCar.lastovertakeSum = MyCar.overtakeSum
+    
     return
 
 

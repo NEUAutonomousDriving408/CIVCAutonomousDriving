@@ -30,7 +30,8 @@ class DistanceData:
 
 
 def convert_image_to_numpy_ndarray(imageframe_byte):
-   return numpy.array(Image.open(imageframe_byte))
+
+    return numpy.array(Image.open(imageframe_byte))
 
 
 def run(perceptionFlag, data, PerceptionArgs, distanceData, MyCar):
@@ -43,23 +44,25 @@ def run(perceptionFlag, data, PerceptionArgs, distanceData, MyCar):
 
     time.sleep(0.5)
     while True:
-        img = convert_image_to_numpy_ndarray(data["image"].byte)
-        result_left, result_mid, result_right = detection.driving_runtime(predictor=PerceptionArgs["predictor"], 
+        try:
+            img = convert_image_to_numpy_ndarray(data["image"].byte)
+            result_left, result_mid, result_right = detection.driving_runtime(predictor=PerceptionArgs["predictor"], 
                                                                         vis_folder=None, 
                                                                         image=img, 
                                                                         args=PerceptionArgs["args"], 
                                                                         MyCar=MyCar)
-        if MyCar.midlane == 7:
-            distanceData.set_distance_left(float('inf'))
-        else:
-            distanceData.set_distance_left(result_left.item())
+            if MyCar.midlane == 7:
+                distanceData.set_distance_left(float('inf'))
+            else:
+                distanceData.set_distance_left(result_left.item())
 
-        if MyCar.midlane == -7:
-            distanceData.set_distance_right(float('inf'))
-        else:
-            distanceData.set_distance_right(result_right.item())
-        distanceData.set_distance_mid(result_mid.item())
-        # print("distance : ", result_mid.item())
+            if MyCar.midlane == -7:
+                distanceData.set_distance_right(float('inf'))
+            else:
+                distanceData.set_distance_right(result_right.item())
+            distanceData.set_distance_mid(result_mid.item())
+        except:
+            pass
 
     return None
 
