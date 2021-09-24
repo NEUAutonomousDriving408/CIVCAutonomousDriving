@@ -7,7 +7,7 @@ Python Implementation of Autunomous Driving Simulation
 
 ![overtake example](images/50km.gif)
 
-![当前最高得分](images/score52.png)
+![当前最高得分](images/110.png)
 
 #### 软件架构
 包含感知、决策、规划、控制相关部分
