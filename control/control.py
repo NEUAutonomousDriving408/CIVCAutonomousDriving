@@ -21,7 +21,7 @@ steer_ - pid计算方向盘输出
 '''
 def latitudeControlpos(positionnow, latPid):
     latPid.update(positionnow)
-    latPid.steer_ = latPid.output * -1
+    latPid.steer_ = latPid.output * -1.1
     # 缓慢变道尝试 可以但没必要 不利于提速
     # if abs(latPid.steer_) > 200:
     #     latPid.steer_ = 200 if latPid.steer_ > 0 else -200
@@ -59,14 +59,14 @@ def lontitudeControlSpeed(speed, lonPid):
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 5')
         lonPid.thorro_ = (-1 * lonPid.output / speedPidThread_2) * 0.15
         # 减速二阶段                 abs(2 - (2~10))/2 * 0.6
-        lonPid.brake_ = min(abs((speedPidThread_2 - (-1 * lonPid.output)) / speedPidThread_2) * 0.6, 1.0)
-        # lonPid.brake_ = 1.0
+        # lonPid.brake_ = min(abs((speedPidThread_2 - (-1 * lonPid.output)) / speedPidThread_2) * 0.6, 1.0)
+        lonPid.brake_ = 1.0
     # print(lonPid.thorro_, '    ', lonPid.brake_)
 
 
 def speedupJob(Controller, MyCar):
-    if MyCar.time >= 150:
-        Controller.speeduplimit = 90
+    if MyCar.time >= 100:
+        Controller.speeduplimit = 98
     # else:
     #     Controller.speeduplimit = 70
 
@@ -94,10 +94,10 @@ def overtakeJob(Controller, MyCar, distanceData):
     if (not MyCar.changing):
         # 最左侧不可左变道
         if (MyCar.direction == 'left'):
-            MyCar.midlane = min(7 , 7 + MyCar.midlane)
+            MyCar.midlane = min(7.5 , 7.5 + MyCar.midlane)
         # 最右侧不可右变道
         elif (MyCar.direction == 'right'):
-            MyCar.midlane = max(-7 , -7 + MyCar.midlane)
+            MyCar.midlane = max(-7.5 , -7.5 + MyCar.midlane)
         Controller.latPid.setSetpoint(MyCar.midlane)
         # 更新中线state 进入超车
         MyCar.changing = True
@@ -115,12 +115,12 @@ def overtakeJob(Controller, MyCar, distanceData):
         MyCar.overtakeSum += 1
 
     # 横向控制 steer_ 加入角度速度约束
-    # latitudeyrControlpos(MyCar.yr, Controller.yrPid)
+    latitudeyrControlpos(MyCar.yr, Controller.yrPid)
     # print('yr is', MyCar.yr, 'steeryr is', Controller.yrPid.yrsteer_) # overtake >15 , normal < 3
     # print('latsteer is ', Controller.latPid.steer_)
     latitudeControlpos(MyCar.positionnow, Controller.latPid)
     ADCPlatform.control(Controller.speedPid.thorro_,
-                        Controller.latPid.steer_,  # - Controller.yrPid.yrsteer_,
+                        Controller.latPid.steer_ - 0.01 * Controller.yrPid.yrsteer_,
                         Controller.speedPid.brake_, 1)
 
 def run(Controller, MyCar, SensorID, distanceData):

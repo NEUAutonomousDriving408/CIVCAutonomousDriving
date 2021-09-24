@@ -414,15 +414,13 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
                 #                                         outputs[0][i][2].cpu().clone(), 
                 #                                         outputs[0][i][3].cpu().clone(), 
                 #                                         args)
-                # # if the bounding box is bigger than a threshold,
-                # # meaning that a big box is in the front of the autonomous driving vehicle,
-                # # there will be a situation that current vehicle and the front vechile is too close.
+                # if the bounding box is bigger than a threshold,
+                # meaning that a big box is in the front of the autonomous driving vehicle,
+                # there will be a situation that current vehicle and the front vechile is too close.
                 # if outputs[0][i][2] - outputs[0][i][0] > 230 and bottomY < 390:
-                #     distance_mid = distance_estimation(outputs[0][i][0].cpu().clone(), 
-                #                                         outputs[0][i][1].cpu().clone(), 
-                #                                         outputs[0][i][2].cpu().clone(), 
-                #                                         outputs[0][i][3].cpu().clone(), 
-                #                                         args)
+                #     midlist1.append(i)
+                #     midlist2.append( (outputs[0][i][2] - outputs[0][i][0]) * (outputs[0][i][3] - outputs[0][i][1]) )
+
                 point.x_ = (outputs[0][i][0] + (outputs[0][i][2] - outputs[0][i][0]) / 2) / 1.3333
                 point.y_ = outputs[0][i][3] / 1.3333
                 if triangle.isInTriangle(point):
