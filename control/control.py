@@ -65,6 +65,11 @@ def lontitudeControlSpeed(speed, lonPid):
 
 
 def speedupJob(Controller, MyCar):
+    if MyCar.time >= 150:
+        Controller.speeduplimit = 90
+    # else:
+    #     Controller.speeduplimit = 70
+
     Controller.speedPid.setSetpoint(Controller.speeduplimit)
     # 纵向控制 thorro_ and brake_
     lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
@@ -99,7 +104,11 @@ def overtakeJob(Controller, MyCar, distanceData):
 
     # overtake 完成 切换 follow 状态跟车
     print("minus : ", MyCar.midlane - MyCar.positionnow)
-    if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.5):
+    # if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.5):
+    if (MyCar.changing and 
+        (distanceData.distance_mid > 20
+        or abs(MyCar.midlane - MyCar.positionnow) < 0.5)
+        ):
         MyCar.cardecision = 'speedup'
         MyCar.direction = 'mid'
         MyCar.changing = False

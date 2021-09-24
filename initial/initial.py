@@ -14,11 +14,12 @@ class CarState(object):
         self.positionnow = 0        # 两车道线A1求和
         self.changing = False       # 处于超车状态时为True
         # self.saftydistance = 11     # (最大时速50)与前车的安全距离 对于紧密跟车的情况 要准确识别并控速
-        self.saftydistance = 15     # 与前车的安全距离 对于紧密跟车的情况 要准确识别并控速
+        self.saftydistance = 14     # 与前车的安全距离 对于紧密跟车的情况 要准确识别并控速
         self.direction = 'mid'      # 当前行驶方向
 
         self.lastovertakeSum = 0
         self.overtakeSum = 0
+        self.time = 0
 
 class ControlData(object):
     def __init__(self):
