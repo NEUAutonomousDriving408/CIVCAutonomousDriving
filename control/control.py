@@ -23,8 +23,8 @@ def latitudeControlpos(positionnow, latPid):
     latPid.update(positionnow)
     latPid.steer_ = latPid.output * -1
     # 缓慢变道尝试 可以但没必要 不利于提速
-    # if abs(latPid.steer_) > 70:
-    #     latPid.steer_ = 70 if latPid.steer_ > 0 else -70
+    # if abs(latPid.steer_) > 200:
+    #     latPid.steer_ = 200 if latPid.steer_ > 0 else -200
 
 ''' xld - speed pid control
 加速时能够较快达到设定目标 
@@ -52,12 +52,12 @@ def lontitudeControlSpeed(speed, lonPid):
     elif (lonPid.output < -1 * speedPidThread_1):  # 减速阶段
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 4')
         lonPid.thorro_ = (-1 * lonPid.output / 5) * 0.3
-        lonPid.brake_= 0.8
+        lonPid.brake_= 1.0
     else :
         # print('speed is:', speed, 'output is:', lonPid.output, 'stage 5')
         lonPid.thorro_ = (-1 * lonPid.output / speedPidThread_2) * 0.15
-        lonPid.brake_ = abs((speedPidThread_2 - (-1 * lonPid.output)) / speedPidThread_2) * 0.6
-        # lonPid.brake_ = 1.0
+        # lonPid.brake_ = abs((speedPidThread_2 - (-1 * lonPid.output)) / speedPidThread_2) * 0.6
+        lonPid.brake_ = 1.0
     print(lonPid.thorro_, '    ', lonPid.brake_)
 
 
@@ -93,8 +93,8 @@ def overtakeJob(Controller, MyCar):
 
     # overtake 切换 follow 状态跟车
     print("minus : ", MyCar.midlane - MyCar.positionnow)
-    if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.4):
-        MyCar.cardecision = 'speed'
+    if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.5):
+        MyCar.cardecision = 'speedup'
         MyCar.direction = 'mid'
         MyCar.changing = False
         MyCar.overtakeSum += 1
@@ -144,4 +144,4 @@ def run(Controller, MyCar, SensorID):
     elif (MyCar.cardecision == 'follow'):
         followJob(Controller, MyCar)
 
-    # print(MyCar.cardecision, MyCar.midlane, MyCar.direction)
+    print(MyCar.cardecision, MyCar.midlane, MyCar.direction)

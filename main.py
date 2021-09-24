@@ -55,7 +55,7 @@ if __name__ == '__main__':
             distanceprocessing.run(distanceData, previous_distance, current_distance, MyCar)
       
             print("current : ", distanceData.distance_mid, "left : ", distanceData.distance_left, "right : ", distanceData.distance_right)
-            print("car decison : ", MyCar.cardecision)
+            # print("car decison : ", MyCar.cardecision)
 
             planning.run(distanceData, MyCar)
             control.run(Controller, MyCar, SensorId)
