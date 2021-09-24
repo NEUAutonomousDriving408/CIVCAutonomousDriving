@@ -18,8 +18,10 @@ def run(distanceData, previous_distance, current_distance, MyCar):
     if MyCar.changing:
         distanceData.set_distance_left(float('inf'))
         distanceData.set_distance_right(float('inf'))
+        distanceData.set_distance_mid(float('inf'))
         previous_distance.set_distance_left(float('inf'))
         previous_distance.set_distance_right(float('inf'))
+        previous_distance.set_distance_mid(float('inf'))
     else:
         if distance_left != float('inf'):
             previous_distance.set_distance_left(distance_left)

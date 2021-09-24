@@ -57,7 +57,7 @@ if __name__ == '__main__':
             # print("car decison : ", MyCar.cardecision)
 
             planning.run(distanceData, MyCar)
-            control.run(Controller, MyCar, SensorId)
+            control.run(Controller, MyCar, SensorId, distanceData)
 
         # 到不了这里 能一直跑到平台关闭
         thread1.join()

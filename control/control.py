@@ -80,7 +80,7 @@ def followJob(Controller, MyCar):
     latitudeControlpos(MyCar.positionnow, Controller.latPid)
     ADCPlatform.control(Controller.speedPid.thorro_, Controller.latPid.steer_, Controller.speedPid.brake_, 1)
 
-def overtakeJob(Controller, MyCar):
+def overtakeJob(Controller, MyCar, distanceData):
     Controller.speedPid.setSetpoint(Controller.overtakelimit)
     # 纵向控制 thorro_ and brake_
     lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
@@ -114,7 +114,7 @@ def overtakeJob(Controller, MyCar):
                         Controller.latPid.steer_,  # - Controller.yrPid.yrsteer_,
                         Controller.speedPid.brake_, 1)
 
-def run(Controller, MyCar, SensorID):
+def run(Controller, MyCar, SensorID, distanceData):
 
     # 获取车辆控制数据包
     control_data_package = ADCPlatform.get_control_data()
@@ -142,7 +142,7 @@ def run(Controller, MyCar, SensorID):
 
     # 有限3种状态任务
     if (MyCar.cardecision == 'overtake'):
-        overtakeJob(Controller, MyCar)
+        overtakeJob(Controller, MyCar, distanceData)
     elif (MyCar.cardecision == 'speedup'):
         speedupJob(Controller, MyCar)
     elif (MyCar.cardecision == 'follow'):

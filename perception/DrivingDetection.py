@@ -45,7 +45,7 @@ def make_parser(left_num, right_num):
     parser.add_argument("-lb", "--leftbound", type=int, default=left_num)
     parser.add_argument("-rb", "--rightbound", type=int, default=right_num)
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
-    parser.add_argument("-n", "--name", type=str, default="yolox-l", help="model name")
+    parser.add_argument("-n", "--name", type=str, default="yolox-x", help="model name")
 
     parser.add_argument(
         "--path", default="./assets/dog.jpg", help="path to images or video"
@@ -62,11 +62,11 @@ def make_parser(left_num, right_num):
     parser.add_argument(
         "-f",
         "--exp_file",
-        default="./YOLOX/exps/default/yolox_l.py",
+        default="./YOLOX/exps/default/yolox_x.py",
         type=str,
         help="pls input your experiment description file",
     )
-    parser.add_argument("-c", "--ckpt", default=".//YOLOX/pretrainedmodel/yolox_l.pth", type=str, help="ckpt for eval")
+    parser.add_argument("-c", "--ckpt", default=".//YOLOX/pretrainedmodel/yolox_x.pth", type=str, help="ckpt for eval")
     parser.add_argument(
         "--device",
         default="gpu",
