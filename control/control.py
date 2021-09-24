@@ -94,7 +94,7 @@ def overtakeJob(Controller, MyCar):
     # overtake 切换 follow 状态跟车
     print("minus : ", MyCar.midlane - MyCar.positionnow)
     if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.4):
-        MyCar.cardecision = 'follow'
+        MyCar.cardecision = 'speed'
         MyCar.direction = 'mid'
         MyCar.changing = False
         MyCar.overtakeSum += 1

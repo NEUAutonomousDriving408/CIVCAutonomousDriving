@@ -16,23 +16,24 @@ def run(distanceData, MyCar):
     distance_left, distance_mid, distance_right = distanceData.get_distance() 
     distance = [distance_left, distance_mid, distance_right]
 
-    if MyCar.cardecision == 'follow' and MyCar.speed < 41:
-        MyCar.saftydistance = 9
-    else:
-        MyCar.saftydistance = 13
+    # if MyCar.cardecision == 'follow' and MyCar.speed < 41:
+    #     MyCar.saftydistance = 9
+    # else:
+    #     MyCar.saftydistance = 13
 
     # stage 1
     # 读取sensor 正前方车辆距离数据 如果距离达到安全距离即可跟车
-    if(distance_mid < MyCar.saftydistance and MyCar.cardecision == 'speedup'):  # 小于10米开始减速
-        MyCar.cardecision = 'follow'  # stage0 -> stage1 更改状态之后distance < 10，等到车速降到400即可进行overtake
-        return
+    # if(distance_mid < MyCar.saftydistance and MyCar.cardecision == 'speedup'):  # 小于10米开始减速
+    #     MyCar.cardecision = 'follow'  # stage0 -> stage1 更改状态之后distance < 10，等到车速降到400即可进行overtake
+    #     return
 
     # stage 2
     # find target lane
-    if(MyCar.cardecision == 'follow'
-            and distance_mid < MyCar.saftydistance
+    if(MyCar.cardecision == 'speedup'
+            and distance_mid < MyCar.saftydistance # 13m
             and not MyCar.changing  # 保证超车只判断一次即可
-            and MyCar.speed < 43):  # follow 已将车速降下来
+            # and MyCar.speed < 43
+            ):  # follow 已将车速降下来
 
         # 超车完成后会自动回复到follow状态
         MyCar.cardecision = 'overtake'
@@ -77,8 +78,8 @@ def run(distanceData, MyCar):
 
     # stage 3
     # speedup and get close to the front car
-    if (MyCar.cardecision == 'follow'
-            and distance_mid > MyCar.saftydistance):
-        MyCar.cardecision = 'speedup'
-        return
+    # if (MyCar.cardecision == 'follow'
+    #         and distance_mid > MyCar.saftydistance):
+    #     MyCar.cardecision = 'speedup'
+    #     return
 
