@@ -30,7 +30,6 @@ class DistanceData:
 
 
 def convert_image_to_numpy_ndarray(imageframe_byte):
-
     return numpy.array(Image.open(imageframe_byte))
 
 

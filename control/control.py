@@ -67,10 +67,9 @@ def lontitudeControlSpeed(speed, lonPid):
 
 
 def speedupJob(Controller, MyCar):
-    if MyCar.time >= 100:
-        Controller.speeduplimit = 98
-    # else:
-    #     Controller.speeduplimit = 70
+    if MyCar.time >= Controller.superspeeduplimittime \
+        and MyCar.overtakeSum != 0:
+        Controller.speeduplimit = Controller.superspeeduplimit
 
     Controller.speedPid.setSetpoint(Controller.speeduplimit)
     # 纵向控制 thorro_ and brake_

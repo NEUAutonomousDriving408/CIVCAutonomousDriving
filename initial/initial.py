@@ -25,6 +25,8 @@ class ControlData(object):
     def __init__(self):
 
         self.speeduplimit = 70
+        self.superspeeduplimit = 101    # super speedup max speed
+        self.superspeeduplimittime = 60 # super speedup time threshold
         self.followlimit = 40
         self.overtakelimit = 40
 

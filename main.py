@@ -13,7 +13,6 @@ data["control"] = None
 data["landLine"] = None
 data["radar"] = None
 data["image"] = None
-result = None
 distanceData = DistanceData()
 previous_distance =  DistanceData()
 current_distance = DistanceData()
