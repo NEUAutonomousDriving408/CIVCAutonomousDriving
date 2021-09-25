@@ -51,9 +51,17 @@ if __name__ == '__main__':
         thread2.start()
 
         while True:
-            distanceprocessing.run(distanceData, previous_distance, current_distance, MyCar)
+            # distanceprocessing.run(distanceData, previous_distance, current_distance, MyCar)
+            if MyCar.overtakeSum > MyCar.lastovertakeSum:
+                MyCar.time = 0
+                MyCar.lastovertakeSum = MyCar.overtakeSum
+            else:
+                MyCar.time += 1
       
-            print("current : ", distanceData.distance_mid, "left : ", distanceData.distance_left, "right : ", distanceData.distance_right)
+            print("current : ", distanceData.distance_mid, 
+                "left : ", distanceData.distance_left, 
+                "right : ", distanceData.distance_right, 
+                "changing: ", MyCar.changing)
             # print("car decison : ", MyCar.cardecision)
 
             planning.run(distanceData, MyCar)

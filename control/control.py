@@ -100,17 +100,21 @@ def overtakeJob(Controller, MyCar, distanceData):
         # 最右侧不可右变道
         elif (MyCar.direction == 'right'):
             MyCar.midlane = max(-7.5 , -7.5 + MyCar.midlane)
+        
         Controller.latPid.setSetpoint(MyCar.midlane)
+        
         # 更新中线state 进入超车
         MyCar.changing = True
+    
 
     # overtake 完成 切换 follow 状态跟车
     print("minus : ", MyCar.midlane - MyCar.positionnow)
     # if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.5):
     if (MyCar.changing and 
-        (distanceData.distance_mid > 20
+        (distanceData.distance_mid > 25
         or abs(MyCar.midlane - MyCar.positionnow) < 0.5)
         ):
+        # print("distance mid : ", distanceData.distance_mid)
         MyCar.cardecision = 'speedup'
         MyCar.direction = 'mid'
         MyCar.changing = False

@@ -45,7 +45,7 @@ def make_parser(left_num, right_num):
     parser.add_argument("-lb", "--leftbound", type=int, default=left_num)
     parser.add_argument("-rb", "--rightbound", type=int, default=right_num)
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
-    parser.add_argument("-n", "--name", type=str, default="yolox-x", help="model name")
+    parser.add_argument("-n", "--name", type=str, default="yolox-l", help="model name")
 
     parser.add_argument(
         "--path", default="./assets/dog.jpg", help="path to images or video"
@@ -62,11 +62,11 @@ def make_parser(left_num, right_num):
     parser.add_argument(
         "-f",
         "--exp_file",
-        default="./YOLOX/exps/default/yolox_x.py",
+        default="./YOLOX/exps/default/yolox_l.py",
         type=str,
         help="pls input your experiment description file",
     )
-    parser.add_argument("-c", "--ckpt", default=".//YOLOX/pretrainedmodel/yolox_x.pth", type=str, help="ckpt for eval")
+    parser.add_argument("-c", "--ckpt", default=".//YOLOX/pretrainedmodel/yolox_l.pth", type=str, help="ckpt for eval")
     parser.add_argument(
         "--device",
         default="gpu",
@@ -345,7 +345,7 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
                 point.y_ = outputs[0][i][3] / 1.33333
                 # when autonomous drving vehicle is in middle lane or in right lane,
                 # there will be a left bounding box to estimate distance.
-                if (MyCar.midlane == 0 or MyCar.midlane == -7) and \
+                if (MyCar.midlane == 0 or MyCar.midlane == -7.5) and \
                     MyCar.changing == False and \
                     triangle_left.isInTriangle(point): 
                     leftlist1.append(i)
@@ -353,7 +353,7 @@ def driving_runtime(predictor, vis_folder, image, args, MyCar):
 
                 # when autonomous driving vehicle is in middle lane or left lane,
                 # there will be a right bounding box to estimate distance.
-                if (MyCar.midlane == 0 or MyCar.midlane == 7) and \
+                if (MyCar.midlane == 0 or MyCar.midlane == 7.5) and \
                     MyCar.changing == False and \
                     triangle_right.isInTriangle(point):
                     rightlist1.append(i)

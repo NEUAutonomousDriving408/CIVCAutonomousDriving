@@ -19,6 +19,7 @@ def run(distanceData, previous_distance, current_distance, MyCar):
         distanceData.set_distance_left(float('inf'))
         distanceData.set_distance_right(float('inf'))
         distanceData.set_distance_mid(float('inf'))
+        print("+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-")
         previous_distance.set_distance_left(float('inf'))
         previous_distance.set_distance_right(float('inf'))
         previous_distance.set_distance_mid(float('inf'))
@@ -26,20 +27,22 @@ def run(distanceData, previous_distance, current_distance, MyCar):
         if distance_left != float('inf'):
             previous_distance.set_distance_left(distance_left)
         else:
+            print("--------------------------------")
             current_distance.set_distance_left(previous_distance.distance_left)
             distanceData.set_distance_left(current_distance.distance_left)
         if distance_right != float('inf'):
             previous_distance.set_distance_right(distance_right)
         else:
+            print("++++++++++++++++++++++++++++++")
             current_distance.set_distance_right(previous_distance.distance_right)
             distanceData.set_distance_right(current_distance.distance_right)
     
     # TODO:distance judging bug
     if MyCar.overtakeSum > MyCar.lastovertakeSum:
         MyCar.time = 0
-        # distanceData.set_distance_mid(float('inf'))
-        # distanceData.set_distance_left(float('inf'))
-        # distanceData.set_distance_right(float('inf'))
+        distanceData.set_distance_mid(float('inf'))
+        distanceData.set_distance_left(float('inf'))
+        distanceData.set_distance_right(float('inf'))
         MyCar.lastovertakeSum = MyCar.overtakeSum
     else:
         MyCar.time += 1
