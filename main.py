@@ -13,7 +13,6 @@ data["control"] = None
 data["landLine"] = None
 data["radar"] = None
 data["image"] = None
-result = None
 distanceData = DistanceData()
 previous_distance =  DistanceData()
 current_distance = DistanceData()
@@ -53,7 +52,7 @@ if __name__ == '__main__':
         while True:
             distanceprocessing.run(distanceData, previous_distance, current_distance, MyCar)
       
-            print("current : ", distanceData.distance_mid, "left : ", distanceData.distance_left, "right : ", distanceData.distance_right)
+            # print("current : ", distanceData.distance_mid, "left : ", distanceData.distance_left, "right : ", distanceData.distance_right)
             # print("car decison : ", MyCar.cardecision)
 
             planning.run(distanceData, MyCar)
