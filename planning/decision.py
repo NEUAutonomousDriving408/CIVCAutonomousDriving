@@ -48,14 +48,15 @@ def run(distanceData, MyCar):
     if(MyCar.cardecision == 'speedup'
             and distance_mid > MyCar.saftydistance  # 远大于follow 12m条件
             and distance_left < MyCar.saftydistance + 3 # 左侧车与前车很近
-            and MyCar.midlane == -7   # 当前在最右车道
+            and MyCar.midlane == -7.5   # 当前在最右车道
             and distance_mid - distance_left < MyCar.saftydistance
             # and not MyCar.changing  # 保证超车只判断一次即可
             # and MyCar.overtakeSum == 9
             ):
         # 超车完成后会自动回复到follow状态
         MyCar.cardecision = 'overtake'
-        MyCar.midlane = 0
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        # MyCar.midlane = 0
         # findpath(distance, MyCar)  # left or right
         MyCar.direction = 'left'
         return
@@ -65,7 +66,7 @@ def run(distanceData, MyCar):
     if(MyCar.cardecision == 'speedup'
             and distance_mid > MyCar.saftydistance  # 远大于follow 12m条件
             and distance_right < MyCar.saftydistance + 3 # 左侧车与前车很近
-            and MyCar.midlane == 7   # 当前在最zuo车道
+            and MyCar.midlane == 7.5   # 当前在最zuo车道
             and distance_mid - distance_right < MyCar.saftydistance
             # and not MyCar.changing  # 保证超车只判断一次即可
             # and MyCar.overtakeSum == 9
@@ -73,7 +74,8 @@ def run(distanceData, MyCar):
 
         # 超车完成后会自动回复到follow状态
         MyCar.cardecision = 'overtake'
-        MyCar.midlane = 0
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        # MyCar.midlane = 0
         # findpath(distance, MyCar)  # left or right
         MyCar.direction = 'right'
         return

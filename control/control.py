@@ -19,9 +19,11 @@ def latitudeyrControlpos(yr, yrPid):
 positionnow = 车道多项式 A1之和
 steer_ - pid计算方向盘输出
 '''
-def latitudeControlpos(positionnow, latPid):
+def latitudeControlpos(positionnow, latPid, MyCar):
     latPid.update(positionnow)
     latPid.steer_ = latPid.output * -1.1
+    if MyCar.speed > 80:
+        latPid.steer_ = latPid.output * -0.8
     # 缓慢变道尝试 可以但没必要 不利于提速
     # if abs(latPid.steer_) > 200:
     #     latPid.steer_ = 200 if latPid.steer_ > 0 else -200
@@ -74,7 +76,7 @@ def speedupJob(Controller, MyCar):
     # 纵向控制 thorro_ and brake_
     lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
     # 横向控制 steer_
-    latitudeControlpos(MyCar.positionnow, Controller.latPid)
+    latitudeControlpos(MyCar.positionnow, Controller.latPid, MyCar)
     ADCPlatform.control(Controller.speedPid.thorro_, Controller.latPid.steer_, Controller.speedPid.brake_, 1)
 
 def followJob(Controller, MyCar):
@@ -82,7 +84,7 @@ def followJob(Controller, MyCar):
     # 纵向控制 thorro_ and brake_
     lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
     # 横向控制 steer_
-    latitudeControlpos(MyCar.positionnow, Controller.latPid)
+    latitudeControlpos(MyCar.positionnow, Controller.latPid, MyCar)
     ADCPlatform.control(Controller.speedPid.thorro_, Controller.latPid.steer_, Controller.speedPid.brake_, 1)
 
 def overtakeJob(Controller, MyCar, distanceData):
@@ -118,7 +120,7 @@ def overtakeJob(Controller, MyCar, distanceData):
     latitudeyrControlpos(MyCar.yr, Controller.yrPid)
     # print('yr is', MyCar.yr, 'steeryr is', Controller.yrPid.yrsteer_) # overtake >15 , normal < 3
     # print('latsteer is ', Controller.latPid.steer_)
-    latitudeControlpos(MyCar.positionnow, Controller.latPid)
+    latitudeControlpos(MyCar.positionnow, Controller.latPid, MyCar)
     ADCPlatform.control(Controller.speedPid.thorro_,
                         Controller.latPid.steer_ - 0.01 * Controller.yrPid.yrsteer_,
                         Controller.speedPid.brake_, 1)
@@ -157,4 +159,4 @@ def run(Controller, MyCar, SensorID, distanceData):
     elif (MyCar.cardecision == 'follow'):
         followJob(Controller, MyCar)
 
-    print(MyCar.cardecision, MyCar.midlane, MyCar.direction)
+    # print(MyCar.cardecision, MyCar.midlane, MyCar.direction)
