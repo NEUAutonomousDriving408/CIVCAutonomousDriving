@@ -58,9 +58,7 @@ class ControlData(object):
         self.B = numpy.mat(numpy.zeros((4, 1)))
         self.Q = numpy.eye(4)
         self.R = 1
-
-
-
+        self.X = numpy.mat(numpy.zeros((4, 1)))
 
     def dlqr(self, A, B, Q, R):
         def solve_DARE(A, B, Q, R):
@@ -86,7 +84,6 @@ class ControlData(object):
         K = la.pinv(B.T * X * B + R) * (B.T * X * A)
 
         return K
-
 
     def initLQR(self):
         self.A[0, 0] = 1.0
