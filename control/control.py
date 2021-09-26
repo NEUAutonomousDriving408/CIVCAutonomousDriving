@@ -169,10 +169,6 @@ def run(Controller, MyCar, SensorID, distanceData):
 
     Controller.LQR.B[3, 0] = MyCar.speed/ 3.6 / 4.78 # speed / 4.78
 
-    print(Controller.LQR.dlqr(Controller.LQR.A,
-                              Controller.LQR.B,
-                              Controller.LQR.Q,
-                              Controller.LQR.R))
 
 # 有限3种状态任务
     if (MyCar.cardecision == 'overtake'):
@@ -181,5 +177,11 @@ def run(Controller, MyCar, SensorID, distanceData):
         speedupJob(Controller, MyCar)
     elif (MyCar.cardecision == 'follow'):
         followJob(Controller, MyCar)
+
+    print(Controller.LQR.dlqr(Controller.LQR.A,
+                              Controller.LQR.B,
+                              Controller.LQR.Q,
+                              Controller.LQR.R),
+          ' latsteer is :', Controller.latPid.steer_)
 
     # print(MyCar.cardecision, MyCar.midlane, MyCar.direction)
