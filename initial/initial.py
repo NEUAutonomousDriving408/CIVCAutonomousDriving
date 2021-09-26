@@ -95,10 +95,10 @@ class ControlData(object):
         self.B[3, 0] = 0
 
         # TODO:change here
-        self.Q[0,0] = 1.0
-        self.Q[1,1] = 0
+        self.Q[0,0] = 20.0
+        self.Q[1,1] = 1.0
         self.Q[2,2] = 2.0
-        self.Q[3,3] = 0
+        self.Q[3,3] = 1.0
 
         self.R = 1
 

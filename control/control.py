@@ -71,13 +71,19 @@ def speedupJob(Controller, MyCar):
     if MyCar.time >= Controller.superspeeduplimittime \
         and MyCar.overtakeSum != 0:
         Controller.speeduplimit = Controller.superspeeduplimit
+    
+    lqrsteer = lqrControl(Controller, MyCar)
 
     Controller.speedPid.setSetpoint(Controller.speeduplimit)
     # 纵向控制 thorro_ and brake_
     lontitudeControlSpeed(MyCar.speed, Controller.speedPid)
     # 横向控制 steer_
     latitudeControlpos(MyCar.positionnow, Controller.latPid, MyCar)
-    ADCPlatform.control(Controller.speedPid.thorro_, Controller.latPid.steer_, Controller.speedPid.brake_, 1)
+    ADCPlatform.control(Controller.speedPid.thorro_, 
+                        0.9 * Controller.latPid.steer_ + 0.1 * lqrsteer,
+                        # lqrsteer, 
+                        Controller.speedPid.brake_, 
+                        1)
 
 def followJob(Controller, MyCar):
     Controller.speedPid.setSetpoint(Controller.followlimit)
@@ -143,10 +149,10 @@ def lqrControl(Controller, MyCar):
     Controller.B[3, 0] = MyCar.speed/ 3.6 / 4.78 # speed / 4.78
 
     Controller.X[0, 0] = MyCar.positionnow - MyCar.midlane # lat_error
-    Controller.X[1, 0] = (MyCar.positionnow - MyCar.midlane) / 0.3
+    Controller.X[1, 0] = (MyCar.positionnow - MyCar.midlane) / 0.1
     Controller.X[2, 0] = MyCar.cao
-    Controller.X[3, 0] = (MyCar.cao - 0) / 0.3 # CAO / dt
-
+    Controller.X[3, 0] = (MyCar.cao - 0) / 0.1 # CAO / dt
+ 
     K = Controller.dlqr(Controller.A,
                           Controller.B,
                           Controller.Q,
@@ -156,7 +162,8 @@ def lqrControl(Controller, MyCar):
     fb = (-K * Controller.X)
     delta = 1*ff + 1 * fb
     
-    print('lqr is:', delta, ' latsteer is :', Controller.latPid.steer_)
+    print('lqr is:', delta[0,0] / -50.0 , ' latsteer is :', Controller.latPid.steer_)
+    return delta[0,0] / -50.0
 
 def run(Controller, MyCar, SensorID, distanceData):
 
@@ -196,6 +203,7 @@ def run(Controller, MyCar, SensorID, distanceData):
     elif (MyCar.cardecision == 'follow'):
         followJob(Controller, MyCar)
 
-    
+
+    # lqrControl(Controller, MyCar)
 
     # print(MyCar.cardecision, MyCar.midlane, MyCar.direction)
