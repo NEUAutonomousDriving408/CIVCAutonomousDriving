@@ -1,8 +1,13 @@
 import ADCPlatform
 import torch
+import numpy
+import math
 from yolox.data.datasets import COCO_CLASSES
 import tools.pid as pid
 import perception.DrivingDetection as detection
+import tools.lqr as lqr
+import scipy.linalg as la
+
 
 class CarState(object):
     def __init__(self):
@@ -47,6 +52,58 @@ class ControlData(object):
         self.speedPid = pid.PID(self.speed_kp, 0, self.speed_kp)
         self.speedPidThread_1 = 10
         self.speedPidThread_2 = 2
+
+        self.LQR = lqr.State(x=0.0, y= 0.0, yaw=0.0, v=0.0)
+        self.A = numpy.mat(numpy.zeros((4, 4)))
+        self.B = numpy.mat(numpy.zeros((4, 1)))
+        self.Q = numpy.eye(4)
+        self.R = 1
+
+
+
+
+    def dlqr(self, A, B, Q, R):
+        def solve_DARE(A, B, Q, R):
+            """
+            solve a discrete time_Algebraic Riccati equation (DARE)
+            """
+            X = Q
+            maxiter = 500
+            eps = 0.01
+
+            for i in range(maxiter):
+                Xn = A.T * X * A - A.T * X * B * la.pinv(R + B.T * X * B) * B.T * X * A + Q
+                if (abs(Xn - X)).max()  < eps:
+                    X = Xn
+                    break
+                X = Xn
+
+            return Xn
+        # first, try to solve the ricatti equation
+        X = solve_DARE(A, B, Q, R)
+
+        # compute the LQR gain
+        K = la.pinv(B.T * X * B + R) * (B.T * X * A)
+
+        return K
+
+
+    def initLQR(self):
+        self.A[0, 0] = 1.0
+        self.A[0, 1] = 0.1
+        self.A[1, 2] = 0
+        self.A[2, 2] = 1.0
+        self.A[2, 3] = 0.1
+
+        self.B[3, 0] = 0
+
+        # TODO:change here
+        self.Q[0,0] = 1.0
+        self.Q[1,1] = 0
+        self.Q[2,2] = 2.0
+        self.Q[3,3] = 0
+
+        self.R = 1
 
     def initPID(self):
         self.speedPid.clear() # lon
