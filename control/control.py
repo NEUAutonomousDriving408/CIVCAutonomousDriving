@@ -157,17 +157,17 @@ def run(Controller, MyCar, SensorID, distanceData):
     Controller.LQR.y = MyCar.positionnow
     Controller.LQR.yaw = MyCar.cao # TODO:度
     Controller.LQR.v = MyCar.speed # TODO:千米/h
-    Controller.LQR.A[0, 0] = 0
-    Controller.LQR.A[0, 1] = 1
-    Controller.LQR.A[1, 1] = -1 * (2000)/2000/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
-    Controller.LQR.A[1, 2] = (2000)/2000
-    Controller.LQR.A[1, 3] = -1 * 2.5 * (2000)/2000/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
-    Controller.LQR.A[2, 3] = 1.0
-    Controller.LQR.A[2, 1] = -1 * 2.5 * (2000)/200/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
-    Controller.LQR.A[2, 2] = -1 * 2.5 * (2000)/200
-    Controller.LQR.A[2, 3] = -1 * 2.5 * (2000)/200/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
+    Controller.A[0, 0] = 0
+    Controller.A[0, 1] = 1
+    Controller.A[1, 1] = -1 * (2000)/2000/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
+    Controller.A[1, 2] = (2000)/2000
+    Controller.A[1, 3] = -1 * 2.5 * (2000)/2000/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
+    Controller.A[2, 3] = 1.0
+    Controller.A[2, 1] = -1 * 2.5 * (2000)/200/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
+    Controller.A[2, 2] = -1 * 2.5 * (2000)/200
+    Controller.A[2, 3] = -1 * 2.5 * (2000)/200/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
 
-    Controller.LQR.B[3, 0] = MyCar.speed/ 3.6 / 4.78 # speed / 4.78
+    Controller.B[3, 0] = MyCar.speed/ 3.6 / 4.78 # speed / 4.78
 
 
 # 有限3种状态任务
@@ -178,10 +178,10 @@ def run(Controller, MyCar, SensorID, distanceData):
     elif (MyCar.cardecision == 'follow'):
         followJob(Controller, MyCar)
 
-    print(Controller.LQR.dlqr(Controller.LQR.A,
-                              Controller.LQR.B,
-                              Controller.LQR.Q,
-                              Controller.LQR.R),
+    print(Controller.dlqr(Controller.A,
+                              Controller.B,
+                              Controller.Q,
+                              Controller.R),
           ' latsteer is :', Controller.latPid.steer_)
 
     # print(MyCar.cardecision, MyCar.midlane, MyCar.direction)

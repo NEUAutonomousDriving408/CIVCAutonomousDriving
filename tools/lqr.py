@@ -3,48 +3,48 @@ from math import *
 import matplotlib.pyplot as plt
 import scipy.linalg as la
 import time
-Kp = 1
-dt = 0.1
-L = 2.9
-Q = eye(4)
-Q[0,0] = 1.0
-Q[1,1] = 0
-Q[2,2] = 2.0
-Q[3,3] = 0
-R = 1
-max_steer =60 * pi/180#in rad
-target_v =10.0 / 3.6
+# Kp = 1
+# dt = 0.1
+# L = 2.9
+# Q = eye(4)
+# Q[0,0] = 1.0
+# Q[1,1] = 0
+# Q[2,2] = 2.0
+# Q[3,3] = 0
+# R = 1
+# max_steer =60 * pi/180#in rad
+# target_v =10.0 / 3.6
 
 
-cx = linspace(0,200,2000)
-cy = zeros(len(cx))
-pd= zeros(len(cx))
-pdd = zeros(len(cx))
-ck = zeros(len(cx))
-cyaw = zeros(len(cx))
-for i in range(len(cx)):
-    cy[i] = -sin(cx[i]/10) * cx[i]/8
+# cx = linspace(0,200,2000)
+# cy = zeros(len(cx))
+# pd= zeros(len(cx))
+# pdd = zeros(len(cx))
+# ck = zeros(len(cx))
+# cyaw = zeros(len(cx))
+# for i in range(len(cx)):
+#     cy[i] = -sin(cx[i]/10) * cx[i]/8
 
-for i in range (len(cx)-1):
-    pd[i] = (cy[i+1]-cy[i])/(cx[i+1]-cx[i])
+# for i in range (len(cx)-1):
+#     pd[i] = (cy[i+1]-cy[i])/(cx[i+1]-cx[i])
 
-for i in range (len(cx)-1):
-    pdd[i] = (cy[i+1]-2*cy[i] + cy[i-1])/(0.5* (cx[i+1]- cx[i-1]))**2
+# for i in range (len(cx)-1):
+#     pdd[i] = (cy[i+1]-2*cy[i] + cy[i-1])/(0.5* (cx[i+1]- cx[i-1]))**2
 
-for i in range(len(cx)-1):
-    ck[i] = pdd[i]/((1+pd[i]**2)**1.5)
+# for i in range(len(cx)-1):
+#     ck[i] = pdd[i]/((1+pd[i]**2)**1.5)
 
-for i in range(len(pd)):
-    cyaw[i] = atan(pd[i])
+# for i in range(len(pd)):
+#     cyaw[i] = atan(pd[i])
 
-pe = 0
-pth_e = 0
-i = 1
-x = 0
-y = -0.1
-yaw = 0
-v = 0
-ind =0
+# pe = 0
+# pth_e = 0
+# i = 1
+# x = 0
+# y = -0.1
+# yaw = 0
+# v = 0
+# ind =0
 
 class State:
 
@@ -160,45 +160,45 @@ def lqr_steering_control(state, cx, cy, cyaw, ck, pe, pth_e):
     print(delta)
     return delta, ind, e, th_e
 
-state = State(x=0.0, y= -0.5, yaw=0.0, v=0.0)
-x = state.x # l = 所在位置
-y = state.y # s = 0
-yaw = state.yaw # CAO
-v = state.v # speed
+# state = State(x=0.0, y= -0.5, yaw=0.0, v=0.0)
+# x = state.x # l = 所在位置
+# y = state.y # s = 0
+# yaw = state.yaw # CAO
+# v = state.v # speed
 
-i = 0
-x_pos = zeros(len(cx))
-y_pos = zeros(len(cx))
+# i = 0
+# x_pos = zeros(len(cx))
+# y_pos = zeros(len(cx))
 
-while ind < len(cx):
-    delta,ind, e, th_e = lqr_steering_control(state, cx, cy, cyaw, ck, pe, pth_e)
-    pth_e = th_e
-    pe = e
-    print('lateral error is ',e)
-    v = state.v
-    print("v is",v)
-    #print('Index is ', ind)
-    if abs(e) > 4:
-        print('too far from reference!\n')
-        break
-    a = PIDControl(target_v, v)
+# while ind < len(cx):
+#     delta,ind, e, th_e = lqr_steering_control(state, cx, cy, cyaw, ck, pe, pth_e)
+#     pth_e = th_e
+#     pe = e
+#     print('lateral error is ',e)
+#     v = state.v
+#     print("v is",v)
+#     #print('Index is ', ind)
+#     if abs(e) > 4:
+#         print('too far from reference!\n')
+#         break
+#     a = PIDControl(target_v, v)
 
-    state = update(state, a, delta)
-    x = state.x
-    y = state.y
-    x_pos[i] = x
-    y_pos[i] = y
-    i = i + 1
+#     state = update(state, a, delta)
+#     x = state.x
+#     y = state.y
+#     x_pos[i] = x
+#     y_pos[i] = y
+#     i = i + 1
 
 
-plt.plot(cx, cy,"-b")
+# plt.plot(cx, cy,"-b")
 
-for i in range(len(x_pos)):
-    plt.plot(x_pos[i],y_pos[i],".r",markersize = 1)
+# for i in range(len(x_pos)):
+#     plt.plot(x_pos[i],y_pos[i],".r",markersize = 1)
 
-plt.grid(True)
-plt.axis("equal")
-plt.xlabel("x[m]")
-plt.ylabel("y[m]")
-plt.show()
-print(cyaw[0:20])
+# plt.grid(True)
+# plt.axis("equal")
+# plt.xlabel("x[m]")
+# plt.ylabel("y[m]")
+# plt.show()
+# print(cyaw[0:20])
