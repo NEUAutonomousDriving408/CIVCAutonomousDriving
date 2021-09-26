@@ -125,6 +125,39 @@ def overtakeJob(Controller, MyCar, distanceData):
                         Controller.latPid.steer_ - 0.01 * Controller.yrPid.yrsteer_,
                         Controller.speedPid.brake_, 1)
 
+def lqrControl(Controller, MyCar):
+    Controller.LQR.x = 0
+    Controller.LQR.y = MyCar.positionnow
+    Controller.LQR.yaw = MyCar.cao # TODO:度
+    Controller.LQR.v = MyCar.speed # TODO:千米/h
+    Controller.A[0, 0] = 0
+    Controller.A[0, 1] = 1
+    Controller.A[1, 1] = -1 * (2000)/2000/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
+    Controller.A[1, 2] = (2000)/2000
+    Controller.A[1, 3] = -1 * 2.5 * (2000)/2000/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
+    Controller.A[2, 3] = 1.0
+    Controller.A[2, 1] = -1 * 2.5 * (2000)/200/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
+    Controller.A[2, 2] = -1 * 2.5 * (2000)/200
+    Controller.A[2, 3] = -1 * 2.5 * (2000)/200/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
+
+    Controller.B[3, 0] = MyCar.speed/ 3.6 / 4.78 # speed / 4.78
+
+    Controller.X[0, 0] = MyCar.positionnow - MyCar.midlane # lat_error
+    Controller.X[1, 0] = (MyCar.positionnow - MyCar.midlane) / 0.3
+    Controller.X[2, 0] = MyCar.cao
+    Controller.X[3, 0] = (MyCar.cao - 0) / 0.3 # CAO / dt
+
+    K = Controller.dlqr(Controller.A,
+                          Controller.B,
+                          Controller.Q,
+                          Controller.R)
+
+    ff = numpy.arctan(4.78 * 1)
+    fb = (-K * Controller.X)
+    delta = 1*ff + 1 * fb
+    
+    print('lqr is:', delta, ' latsteer is :', Controller.latPid.steer_)
+
 def run(Controller, MyCar, SensorID, distanceData):
 
     # 获取车辆控制数据包
@@ -153,26 +186,7 @@ def run(Controller, MyCar, SensorID, distanceData):
     MyCar.yr = control_data_package.json['YR']
 
 
-    Controller.LQR.x = 0
-    Controller.LQR.y = MyCar.positionnow
-    Controller.LQR.yaw = MyCar.cao # TODO:度
-    Controller.LQR.v = MyCar.speed # TODO:千米/h
-    Controller.A[0, 0] = 0
-    Controller.A[0, 1] = 1
-    Controller.A[1, 1] = -1 * (2000)/2000/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
-    Controller.A[1, 2] = (2000)/2000
-    Controller.A[1, 3] = -1 * 2.5 * (2000)/2000/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
-    Controller.A[2, 3] = 1.0
-    Controller.A[2, 1] = -1 * 2.5 * (2000)/200/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
-    Controller.A[2, 2] = -1 * 2.5 * (2000)/200
-    Controller.A[2, 3] = -1 * 2.5 * (2000)/200/((MyCar.speed/3.6) * numpy.cos(abs(MyCar.cao) * numpy.pi / 180))
-
-    Controller.B[3, 0] = MyCar.speed/ 3.6 / 4.78 # speed / 4.78
-
-    Controller.x[0, 0] = MyCar.positionnow - MyCar.midlane # lat_error
-    Controller.x[1, 0] = (MyCar.positionnow - MyCar.midlane) / 0.3
-    Controller.x[2, 0] = MyCar.cao
-    Controller.x[3, 0] = (MyCar.cao - 0) / 0.3 # CAO / dt
+   
 
 # 有限3种状态任务
     if (MyCar.cardecision == 'overtake'):
@@ -182,15 +196,6 @@ def run(Controller, MyCar, SensorID, distanceData):
     elif (MyCar.cardecision == 'follow'):
         followJob(Controller, MyCar)
 
-    K = Controller.dlqr(Controller.A,
-                          Controller.B,
-                          Controller.Q,
-                          Controller.R)
-
-    ff = numpy.arctan(4.78 * 1)
-    fb = (-K * Controller.x)
-    delta = 1*ff + 1 * fb
     
-    print('lqr is:', delta, ' latsteer is :', Controller.latPid.steer_)
 
     # print(MyCar.cardecision, MyCar.midlane, MyCar.direction)
