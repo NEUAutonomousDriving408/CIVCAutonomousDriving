@@ -17,11 +17,11 @@ def run(distanceData, MyCar):
     distance = [distance_left, distance_mid, distance_right]
 
 
-    if MyCar.speed < 45 and MyCar.cardecision == 'speedup':
-        MyCar.saftydistance = 8
-        # 高速时为13 相信速度控制
-    else:
-        MyCar.saftydistance = 14
+    # if MyCar.speed < 45 and MyCar.cardecision == 'speedup':
+    #     MyCar.saftydistance = 8
+    #     # 高速时为13 相信速度控制
+    # else:
+    #     MyCar.saftydistance = 14
 
     # stage 1
     # 读取sensor 正前方车辆距离数据 如果距离达到安全距离即可跟车

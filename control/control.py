@@ -21,7 +21,7 @@ steer_ - pid计算方向盘输出
 '''
 def latitudeControlpos(positionnow, latPid, MyCar):
     latPid.update(positionnow)
-    latPid.steer_ = latPid.output * -1.1
+    latPid.steer_ = latPid.output * -0.9
     if MyCar.speed > 80:
         latPid.steer_ = latPid.output * -0.8
     # 缓慢变道尝试 可以但没必要 不利于提速
@@ -68,7 +68,7 @@ def lontitudeControlSpeed(speed, lonPid):
 
 def speedupJob(Controller, MyCar):
     if MyCar.time >= Controller.superspeeduplimittime \
-        and MyCar.overtakeSum != 0:
+        and MyCar.overtakeSum >= 7:
         Controller.speeduplimit = Controller.superspeeduplimit
 
     Controller.speedPid.setSetpoint(Controller.speeduplimit)
