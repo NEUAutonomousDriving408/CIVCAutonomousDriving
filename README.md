@@ -58,9 +58,11 @@ git reset version-number
 `回退到上一个版本 不加^会有原地恢复的问题`
 git revert HEAD
 
-## OPTIMIZIUM
-
-
+## 决赛优化
+1. 横向控制 减小偏差 存在弯道 特别是高速情况下
+2. 纵向控制 加速度优化 串级pid控制
+3. 车道线位置 7.5 0 -7.5 优化为超参数到init 
+4. 提速到75km/h
 
 
 
