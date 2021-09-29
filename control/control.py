@@ -21,7 +21,7 @@ steer_ - pid计算方向盘输出
 '''
 def latitudeControlpos(positionnow, latPid, MyCar):
     latPid.update(positionnow)
-    latPid.steer_ = latPid.output * -1.1
+    latPid.steer_ = latPid.output * -1.0
     if MyCar.speed > 80:
         latPid.steer_ = latPid.output * -0.8
     # 缓慢变道尝试 可以但没必要 不利于提速
@@ -95,16 +95,16 @@ def overtakeJob(Controller, MyCar, distanceData):
     if (not MyCar.changing):
         # 最左侧不可左变道
         if (MyCar.direction == 'left'):
-            MyCar.midlane = min(7.5 , 7.5 + MyCar.midlane)
+            MyCar.midlane = min(MyCar.lanestate.LEFT , MyCar.lanestate.LEFT + MyCar.midlane)
         # 最右侧不可右变道
         elif (MyCar.direction == 'right'):
-            MyCar.midlane = max(-7.5 , -7.5 + MyCar.midlane)
+            MyCar.midlane = max(MyCar.lanestate.RIGHT , MyCar.lanestate.RIGHT + MyCar.midlane)
         Controller.latPid.setSetpoint(MyCar.midlane)
         # 更新中线state 进入超车
         MyCar.changing = True
 
     # overtake 完成 切换 follow 状态跟车
-    print("minus : ", MyCar.midlane - MyCar.positionnow)
+    # print("minus : ", MyCar.midlane - MyCar.positionnow)
     # if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.5):
     if (MyCar.changing and 
         (distanceData.distance_mid > 20

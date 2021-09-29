@@ -17,11 +17,11 @@ def run(distanceData, MyCar):
     distance = [distance_left, distance_mid, distance_right]
 
 
-    if MyCar.speed < 45 and MyCar.cardecision == 'speedup':
-        MyCar.saftydistance = 8
-        # 高速时为13 相信速度控制
-    else:
-        MyCar.saftydistance = 14
+    # if MyCar.speed < 45 and MyCar.cardecision == 'speedup':
+    #     MyCar.saftydistance = 8
+    #     # 高速时为13 相信速度控制
+    # else:
+    #     MyCar.saftydistance = 15
 
     # stage 1
     # 读取sensor 正前方车辆距离数据 如果距离达到安全距离即可跟车
@@ -48,7 +48,7 @@ def run(distanceData, MyCar):
     # if(MyCar.cardecision == 'speedup'
     #         and distance_mid > MyCar.saftydistance  # 远大于follow 12m条件
     #         and distance_left < MyCar.saftydistance + 3 # 左侧车与前车很近
-    #         and MyCar.midlane == -7.5   # 当前在最右车道
+    #         and MyCar.midlane == MyCar.lanestate.RIGHT   # 当前在最右车道
     #         and distance_mid - distance_left < MyCar.saftydistance
     #         # and not MyCar.changing  # 保证超车只判断一次即可
     #         # and MyCar.overtakeSum == 9
@@ -66,7 +66,7 @@ def run(distanceData, MyCar):
     # if(MyCar.cardecision == 'speedup'
     #         and distance_mid > MyCar.saftydistance  # 远大于follow 12m条件
     #         and distance_right < MyCar.saftydistance + 3 # 左侧车与前车很近
-    #         and MyCar.midlane == 7.5   # 当前在最zuo车道
+    #         and MyCar.midlane == MyCar.lanestate.LEFT   # 当前在最zuo车道
     #         and distance_mid - distance_right < MyCar.saftydistance
     #         # and not MyCar.changing  # 保证超车只判断一次即可
     #         # and MyCar.overtakeSum == 9

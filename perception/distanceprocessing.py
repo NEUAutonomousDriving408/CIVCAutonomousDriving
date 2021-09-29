@@ -37,9 +37,9 @@ def run(distanceData, previous_distance, current_distance, MyCar):
     # TODO:distance judging bug
     if MyCar.overtakeSum > MyCar.lastovertakeSum:
         MyCar.time = 0
-        # distanceData.set_distance_mid(float('inf'))
-        # distanceData.set_distance_left(float('inf'))
-        # distanceData.set_distance_right(float('inf'))
+        distanceData.set_distance_mid(float('inf'))
+        distanceData.set_distance_left(float('inf'))
+        distanceData.set_distance_right(float('inf'))
         MyCar.lastovertakeSum = MyCar.overtakeSum
     else:
         MyCar.time += 1

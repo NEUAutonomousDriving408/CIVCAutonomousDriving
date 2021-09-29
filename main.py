@@ -27,6 +27,7 @@ if __name__ == '__main__':
     password = 'ps123456'
     # whether initialize perception model
     perceptionFlag = True
+    perceptionModel = "yolox_l"
     image_left_bound = 303
     image_right_bound = 337
 
@@ -39,6 +40,7 @@ if __name__ == '__main__':
         
         # init func get sensor data
         SensorId, Controller, PerceptionArgs, MyCar = initial.init(perceptionFlag,
+                                                                   perceptionModel,
                                                                    image_left_bound,
                                                                    image_right_bound)
         # multi thread while true
@@ -52,7 +54,8 @@ if __name__ == '__main__':
         while True:
             distanceprocessing.run(distanceData, previous_distance, current_distance, MyCar)
       
-            # print("current : ", distanceData.distance_mid, "left : ", distanceData.distance_left, "right : ", distanceData.distance_right)
+            print("current : ", distanceData.distance_mid, "left : ", distanceData.distance_left, "right : ", distanceData.distance_right)
+            # print("position : ", MyCar.positionnow)
             # print("car decison : ", MyCar.cardecision)
 
             planning.run(distanceData, MyCar)
