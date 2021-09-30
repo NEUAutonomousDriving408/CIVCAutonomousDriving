@@ -24,6 +24,7 @@ def latitudeControlpos(positionnow, latPid, MyCar):
     latPid.steer_ = latPid.output * -1.0
     if MyCar.speed > 80:
         latPid.steer_ = latPid.output * -0.8
+    print("lattel : ", latPid.steer_)
     # 缓慢变道尝试 可以但没必要 不利于提速
     # if abs(latPid.steer_) > 200:
     #     latPid.steer_ = 200 if latPid.steer_ > 0 else -200
@@ -104,7 +105,7 @@ def overtakeJob(Controller, MyCar, distanceData):
         MyCar.changing = True
 
     # overtake 完成 切换 follow 状态跟车
-    # print("minus : ", MyCar.midlane - MyCar.positionnow)
+    print("minus : ", MyCar.midlane - MyCar.positionnow)
     # if (MyCar.changing and abs(MyCar.midlane - MyCar.positionnow) < 0.5):
     if (MyCar.changing and 
         (distanceData.distance_mid > 20

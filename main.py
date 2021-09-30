@@ -54,7 +54,7 @@ if __name__ == '__main__':
         while True:
             distanceprocessing.run(distanceData, previous_distance, current_distance, MyCar)
       
-            print("current : ", distanceData.distance_mid, "left : ", distanceData.distance_left, "right : ", distanceData.distance_right)
+            # print("current : ", distanceData.distance_mid, "left : ", distanceData.distance_left, "right : ", distanceData.distance_right)
             # print("position : ", MyCar.positionnow)
             # print("car decison : ", MyCar.cardecision)
 

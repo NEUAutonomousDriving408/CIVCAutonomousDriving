@@ -22,7 +22,7 @@ class LaneState(object):
 
 class CarState(object):
     def __init__(self):
-        self.lanestate = LaneState(7.5, 0, -7.5) # lane control target number
+        self.lanestate = LaneState(7, 0, -8) # lane control target number
         self.speed = 0              # 车辆当前速度
         self.cao = 0                # 车辆当前姿态
         self.yr = 0                 # 车辆当前角速度
@@ -31,7 +31,7 @@ class CarState(object):
         self.positionnow = 0        # 两车道线A1求和
         self.changing = False       # 处于超车状态时为True
         # self.saftydistance = 11     # (最大时速50)与前车的安全距离 对于紧密跟车的情况 要准确识别并控速
-        self.saftydistance = 15     # 与前车的安全距离 对于紧密跟车的情况 要准确识别并控速
+        self.saftydistance = 16     # 与前车的安全距离 对于紧密跟车的情况 要准确识别并控速
         self.direction = 'mid'      # 当前行驶方向
 
         self.lastovertakeSum = 0
@@ -41,15 +41,15 @@ class CarState(object):
 class ControlData(object):
     def __init__(self):
 
-        self.speeduplimit = 72
+        self.speeduplimit = 80
         self.superspeeduplimit = 101    # super speedup control speed
         self.superspeeduplimittime = 60 # super speedup time threshold
         self.followlimit = 40
-        self.overtakelimit = 60         # overtake control speed 
+        self.overtakelimit = 67         # overtake control speed 
 
-        self.lat_kp = 1.10
-        self.lat_ki = 0.08
-        self.lat_kd = 6.2
+        self.lat_kp = 1.65
+        self.lat_ki = 0.07
+        self.lat_kd = 6.96
         self.latPid = pid.PID(self.lat_kp, self.lat_ki, self.lat_kd)
 
         self.yr_kp = 1.0
@@ -109,8 +109,10 @@ def init(perceptionFlag, perceptionModel, image_left_bound=0, image_right_bound=
     predictor = None
     args = None
     if perceptionFlag:
+
         if perceptionModel not in {"yolox_tiny", "yolox_s", "yolox_m", "yolox_l", "yolox_x"}:
             raise RuntimeError("detection model must be a yolox model!")
+
         args = detection.make_parser(perceptionModel, image_left_bound, image_right_bound).parse_args()
         exp = detection.get_exp(args.exp_file, args.name)
         if args.conf is not None:
@@ -152,14 +154,9 @@ def init(perceptionFlag, perceptionModel, image_left_bound=0, image_right_bound=
         predictor = detection.Predictor(model, exp, COCO_CLASSES, trt_file, decoder, args.device, args.fp16, args.legacy)
         print("percetion model load.")
     
-    PercetionArgs = dict()
-    PercetionArgs["predictor"] = predictor
-    PercetionArgs["args"] = args
+    PerceptionArgs = dict()
+    PerceptionArgs["predictor"] = predictor
+    PerceptionArgs["args"] = args
 
-    return SensorId, Controller, PercetionArgs, MyCar
-
-    
-
-    
-
+    return SensorId, Controller, PerceptionArgs, MyCar
 
