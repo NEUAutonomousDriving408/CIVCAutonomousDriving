@@ -37,6 +37,7 @@ class CarState(object):
         self.lastovertakeSum = 0
         self.overtakeSum = 0
         self.time = 0
+        self.finalflag = False
 
 class ControlData(object):
     def __init__(self):
@@ -45,9 +46,9 @@ class ControlData(object):
         self.superspeeduplimit = 101    # super speedup control speed
         self.superspeeduplimittime = 60 # super speedup time threshold
         self.followlimit = 40
-        self.overtakelimit = 67         # overtake control speed 
+        self.overtakelimit = 70         # overtake control speed 
 
-        self.lat_kp = 1.65
+        self.lat_kp = 1.50
         self.lat_ki = 0.07
         self.lat_kd = 6.96
         self.latPid = pid.PID(self.lat_kp, self.lat_ki, self.lat_kd)

@@ -12,9 +12,17 @@ stage 3 : changelane 变道
 # 此处没有overtake的状态机 主要在control中完成 overtake结束后自动切换至follow
 '''
 
+
 def run(distanceData, MyCar):
     distance_left, distance_mid, distance_right = distanceData.get_distance() 
     distance = [distance_left, distance_mid, distance_right]
+
+    if MyCar.speed > 90 and MyCar.cardecision == 'speedup' and not MyCar.finalflag:
+        MyCar.cardecision = 'overtake'
+        # MyCar.midlane = 'left'
+        MyCar.direction = 'left'
+        MyCar.finalflag = True
+        return
 
 
     # if MyCar.speed < 45 and MyCar.cardecision == 'speedup':
