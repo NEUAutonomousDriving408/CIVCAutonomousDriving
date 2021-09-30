@@ -1,5 +1,14 @@
 # ICVRCAutonomousDriving
 
+#### 内容亮点
+###### 感知
+1. 纯视觉测距
+2. 使用点与三角形位置关系判断障碍所在车道位置 目标点取框底边中点
+
+###### 控制
+1. 
+
+
 #### 介绍
 Python Implementation of Autunomous Driving Simulation
 
