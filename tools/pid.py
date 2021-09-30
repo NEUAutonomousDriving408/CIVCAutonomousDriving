@@ -35,6 +35,7 @@ class PID:
         self.thorro_ = 0.0
         self.brake_ = 0.0
         self.steer_ = 0.0
+        self.laststeer_ = 0.0
         self.yrsteer_ = 0.0
 
     def update(self, feedback_value):
