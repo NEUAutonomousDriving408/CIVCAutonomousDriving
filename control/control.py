@@ -132,16 +132,21 @@ def run(Controller, MyCar, SensorID, distanceData):
     control_data_package = ADCPlatform.get_control_data()
     # 获取数据包
     landLine_package = ADCPlatform.get_data(SensorID["landLine"])
-    temp1 = 0
-    temp2 = 0
+    temp1 = 0.0
+    temp2 = 0.0
+
+    x1 = 1.0
+    x2 = 2.0
+    x3 = 4.0
+    x4 = 8.0
 
     # 平台bug 存在读不到数据的情况
     if landLine_package:
         if landLine_package.json:
             if len(landLine_package.json) >= 3 and landLine_package.json[1] and landLine_package.json[2]:
                 # MyCar.positionnow = landLine_package.json[2]['A1'] + landLine_package.json[1]['A1']
-                temp1 = landLine_package.json[1]['A1'] + 2.0 * landLine_package.json[1]['A2'] + 4.0 * landLine_package.json[1]['A3'] + 8.0 * landLine_package.json[1]['A4']
-                temp2 = landLine_package.json[2]['A1'] + 2.0 * landLine_package.json[2]['A2'] + 4.0 * landLine_package.json[2]['A3'] + 8.0 * landLine_package.json[2]['A4']
+                temp1 = x1 * landLine_package.json[1]['A1'] + x2 * landLine_package.json[1]['A2'] + x3 * landLine_package.json[1]['A3'] + x4 * landLine_package.json[1]['A4']
+                temp2 = x1 * landLine_package.json[2]['A1'] + x2 * landLine_package.json[2]['A2'] + x3 * landLine_package.json[2]['A3'] + x4 * landLine_package.json[2]['A4']
                 MyCar.positionnow = temp1 + temp2
             else:
                 pass
