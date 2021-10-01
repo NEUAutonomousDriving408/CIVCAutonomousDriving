@@ -123,7 +123,7 @@ def overtakeJob(Controller, MyCar, distanceData):
     # print('latsteer is ', Controller.latPid.steer_)
     latitudeControlpos(MyCar.positionnow, Controller.latPid, MyCar)
     ADCPlatform.control(Controller.speedPid.thorro_,
-                        Controller.latPid.steer_ - 0.01 * Controller.yrPid.yrsteer_,
+                        Controller.latPid.steer_ + 0.01 * Controller.yrPid.yrsteer_,
                         Controller.speedPid.brake_, 1)
 
 def run(Controller, MyCar, SensorID, distanceData):
@@ -135,10 +135,10 @@ def run(Controller, MyCar, SensorID, distanceData):
     temp1 = 0.0
     temp2 = 0.0
 
-    x1 = 1.0
-    x2 = 2.0
-    x3 = 4.0
-    x4 = 8.0
+    x1 = MyCar.lanefuture ** 0
+    x2 = MyCar.lanefuture ** 1
+    x3 = MyCar.lanefuture ** 2
+    x4 = MyCar.lanefuture ** 3
 
     # 平台bug 存在读不到数据的情况
     if landLine_package:

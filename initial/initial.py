@@ -27,12 +27,13 @@ class CarState(object):
         self.cao = 0                # 车辆当前姿态
         self.yr = 0                 # 车辆当前角速度
         self.cardecision = 'speedup'# planning计算得到决策
-        self.midlane = self.lanestate.MID            # 7.5 0 -7.5 latpid 参考 target
+        self.midlane = self.lanestate.MID   # 7.5 0 -8 latpid 参考 target
         self.positionnow = 0        # 两车道线A1求和
         self.changing = False       # 处于超车状态时为True
         # self.saftydistance = 11     # (最大时速50)与前车的安全距离 对于紧密跟车的情况 要准确识别并控速
         self.saftydistance = 16     # 与前车的安全距离 对于紧密跟车的情况 要准确识别并控速
         self.direction = 'mid'      # 当前行驶方向
+        self.lanefuture = 2.0
 
         self.lastovertakeSum = 0
         self.overtakeSum = 0
@@ -48,7 +49,7 @@ class ControlData(object):
         self.followlimit = 40
         self.overtakelimit = 70         # overtake control speed 
 
-        self.lat_kp = 1.50
+        self.lat_kp = 2.10
         self.lat_ki = 0.07
         self.lat_kd = 6.96
         self.latPid = pid.PID(self.lat_kp, self.lat_ki, self.lat_kd)
