@@ -24,7 +24,7 @@ if __name__ == '__main__':
     # 设置登录用户名
     username = 'YYX_zdjs'
     # 设置登录密码
-    password = 'ps123456'
+    password = '*******'
     # whether initialize perception model
     perceptionFlag = True
     image_left_bound = 303
