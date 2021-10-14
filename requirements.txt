@@ -1,0 +1,15 @@
+certifi==2019.6.16
+requests==2.22.0
+numpy
+torch>=1.7
+opencv_python
+loguru
+scikit-image
+tqdm
+torchvision
+Pillow
+thop
+ninja
+tabulate
+tensorboard
+

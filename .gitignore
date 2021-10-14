@@ -1,0 +1,9 @@
+#忽略gitignore文件  
+#.gitignore  
+#忽略idea setting files
+.idea
+# python cash files
+*.pyc 
+__pycash__
+# mac default files
+.DS_Store
