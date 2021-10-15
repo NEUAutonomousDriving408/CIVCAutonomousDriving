@@ -22,7 +22,7 @@
 [![GitHub license](https://img.shields.io/github/license/NEUAutonomousDriving408/CIVCAutonomousDriving.svg)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/blob/master/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/NEUAutonomousDriving408/CIVCAutonomousDriving.svg)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/releases)
 -->
-
+<img src="images/原理例子.png" style="zoom:100%;" />
 
 # 项目简介
 
@@ -59,6 +59,7 @@ YOLOX论文地址：https://arxiv.org/abs/2107.08430
 
 
 ## 内容亮点
+
 
 ###### 感知
 
