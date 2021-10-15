@@ -1,10 +1,28 @@
 ![CIVCAutonomousDriving](images/CIVCAutonomousDriving.png)
+<p align="center">
+    <a href="https://www.bilibili.com/video/BV1oq4y1d773?p=1&share_medium=android&share_plat=android&share_session_id=787c9d54-e2d0-4594-ba16-107703c68254&share_source=COPY&share_tag=s_i&timestamp=1634263873&unique_k=YKdnwO" alt="Star">
+        <img src="https://img.shields.io/badge/bilibili-our_video_is_here-pink.svg" /></a>
+    <a href="https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/stargazers" alt="Star">
+        <img src="https://img.shields.io/github/stars/NEUAutonomousDriving408/CIVCAutonomousDriving.svg" /></a>
+    <a href="https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/network" alt="fork">
+        <img src="https://img.shields.io/github/forks/NEUAutonomousDriving408/CIVCAutonomousDriving.svg" /></a>
+    <a href="https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/contributors" alt="contributors">
+        <img src="https://img.shields.io/github/contributors/NEUAutonomousDriving408/CIVCAutonomousDriving.svg" /></a>
+    <a href="https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/LICENSE" alt="license">
+        <img src="https://img.shields.io/github/license/NEUAutonomousDriving408/CIVCAutonomousDriving.svg" /></a>
+</p>
 
-[![GitHub license](https://img.shields.io/badge/bilibili-finalvideo-pink)](https://www.bilibili.com/video/BV1oq4y1d773?p=1&share_medium=android&share_plat=android&share_session_id=787c9d54-e2d0-4594-ba16-107703c68254&share_source=COPY&share_tag=s_i&timestamp=1634263873&unique_k=YKdnwO)
-[![GitHub stars](https://img.shields.io/github/stars/NEUAutonomousDriving408/CIVCAutonomousDriving)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/NEUAutonomousDriving408/CIVCAutonomousDriving)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/network)
+<!--
+    <a href="https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/releases" alt="license">
+        <img src="https://img.shields.io/github/release/NEUAutonomousDriving408/CIVCAutonomousDriving.svg" /></a>
+[![GitHub license](https://img.shields.io/badge/bilibili-finalvideo-pink.svg)](https://www.bilibili.com/video/BV1oq4y1d773?p=1&share_medium=android&share_plat=android&share_session_id=787c9d54-e2d0-4594-ba16-107703c68254&share_source=COPY&share_tag=s_i&timestamp=1634263873&unique_k=YKdnwO)
+[![GitHub stars](https://img.shields.io/github/stars/NEUAutonomousDriving408/CIVCAutonomousDriving.svg)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/NEUAutonomousDriving408/CIVCAutonomousDriving.svg)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/network)
 [![GitHub contributor](https://img.shields.io/github/contributors/NEUAutonomousDriving408/CIVCAutonomousDriving)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/graphs/contributors)
-[![GitHub license](https://img.shields.io/github/license/NEUAutonomousDriving408/CIVCAutonomousDriving)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/NEUAutonomousDriving408/CIVCAutonomousDriving.svg)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/blob/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/NEUAutonomousDriving408/CIVCAutonomousDriving.svg)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/releases)
+-->
+
 
 # 项目简介
 
