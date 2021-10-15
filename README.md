@@ -1,6 +1,12 @@
 # CIVCAutonomousDriving
 
-## 项目简介
+[![GitHub license](https://img.shields.io/badge/bilibili-finalvideo-pink)](https://www.bilibili.com/video/BV1oq4y1d773?p=1&share_medium=android&share_plat=android&share_session_id=787c9d54-e2d0-4594-ba16-107703c68254&share_source=COPY&share_tag=s_i&timestamp=1634263873&unique_k=YKdnwO)
+[![GitHub stars](https://img.shields.io/github/stars/NEUAutonomousDriving408/CIVCAutonomousDriving)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/NEUAutonomousDriving408/CIVCAutonomousDriving)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/network)
+[![GitHub contributor](https://img.shields.io/github/contributors/NEUAutonomousDriving408/CIVCAutonomousDriving)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/graphs/contributors)
+[![GitHub license](https://img.shields.io/github/license/NEUAutonomousDriving408/CIVCAutonomousDriving)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/blob/master/LICENSE)
+
+# 项目简介
 
 本项目为2021中国（沈阳）智能网联汽车国际大会（2021 China (Shenyang) Intelligent Connected Vehicles Conference, CIVC）“AD Chauffeur 杯”仿真算法挑战赛自动驾驶赛题云逸行-东北大学赛队的比赛项目，并在决赛中获得第二名的成绩与自动驾驶组银奖的荣誉。项目包含感知、决策、控制相关部分，使用Python语言完成，运行过程与初赛决赛成绩如图所示。
 
