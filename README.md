@@ -22,7 +22,7 @@
 [![GitHub license](https://img.shields.io/github/license/NEUAutonomousDriving408/CIVCAutonomousDriving.svg)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/blob/master/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/NEUAutonomousDriving408/CIVCAutonomousDriving.svg)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/releases)
 -->
-<img src="images/原理例子.png" style="zoom:100%;" />
+
 
 # 项目简介
 
@@ -50,15 +50,22 @@ YOLOX论文地址：https://arxiv.org/abs/2107.08430
 
 - 预赛成绩
 
+<p align="center">
 <img src="images/预赛成绩.png" style="zoom:50%;" />
+</p>
 
 - 决赛成绩
 
+<p align="center">
 <img src="images/决赛成绩.png" style="zoom:50%;" />
-
+</p>
 
 
 ## 内容亮点
+
+<p align="center">
+<img src="images/speed2overtake.png" style="zoom:50%;" />
+</p>
 
 
 ###### 感知
