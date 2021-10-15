@@ -1,4 +1,4 @@
-# CIVCAutonomousDriving
+![CIVCAutonomousDriving](images/CIVCAutonomousDriving.png)
 
 [![GitHub license](https://img.shields.io/badge/bilibili-finalvideo-pink)](https://www.bilibili.com/video/BV1oq4y1d773?p=1&share_medium=android&share_plat=android&share_session_id=787c9d54-e2d0-4594-ba16-107703c68254&share_source=COPY&share_tag=s_i&timestamp=1634263873&unique_k=YKdnwO)
 [![GitHub stars](https://img.shields.io/github/stars/NEUAutonomousDriving408/CIVCAutonomousDriving)](https://github.com/NEUAutonomousDriving408/CIVCAutonomousDriving/stargazers)
