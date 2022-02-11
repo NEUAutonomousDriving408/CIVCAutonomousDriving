@@ -174,26 +174,42 @@ python main.py
 ```
 
 
-
-## 操作查询
-
-### 分支操作
+## Git操作查询
 `务必养成良好习惯`
 
+
+### 分支操作
 #### 创建分支
 `创建新分支并切换`
-git checkout -b dev || 也可以先开发(比如直接改了master)，准备切分支时才new新分支，此时更改会都转移到新分支上
+
+1.git checkout -b dev 
+
+2.也可以先开发(比如直接改了master),这时候先不提交,准备切分支时才-b(new)新分支，此时更改会都转移到新分支上
+
 `提交新分支到远程`
 
 git push --set-upstream origin dev
 
+
 #### 合并分支
-`开发结束后测试稳定即可合并到master`
+###### merge
+`开发结束后测试稳定即可合并到master 适用于不落后主分支的情况`
 1. git checkout master
 
-2. git merge xld-control-pid
+2. git merge xld-control-pid 
 
 3. 必要时候解决冲突文件，注意注释后的代码合并进来不会提示。。。
+
+###### rebase
+`调整当前开发分支 `[适用于落后现有提交](https://cloud.tencent.com/developer/article/1683707)
+
+1. git checkout test-new
+
+2. git rebase master 合并后不产生额外分叉
+
+`Commit管理`
+
+[how to rebase -i，合并多个commit](https://segmentfault.com/a/1190000007748862)
 
 #### 删除分支
 1.1.查看本地分支 git branch 
@@ -206,9 +222,9 @@ git branch -D xld-control-pid
 3.删除远程分支 
 git push origin --delete xld-control-pid
 
-### 版本管理
 
-#### 强制回退
+### 版本管理
+###### 强制回退
 `删除中间所有错误提交`
 git reset --hard version-number
 
